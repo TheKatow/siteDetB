@@ -1,25 +1,40 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Prochainement</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Donjons & Bastons | Le Jeu de Cartes d'Exploration de Donjons</title>
+
+    <meta name="description" content="Découvrez Donjons & Bastons, un jeu de cartes tactique d'exploration de donjons. Suivez notre aventure sur les réseaux et préparez-vous pour le crowdfunding !">
+
+    <meta property="og:title" content="Donjons & Bastons | Jeu de Cartes">
+    <meta property="og:description" content="Explorez le donjon, combattez les monstres. Suivez le projet !">
+    <meta property="og:image" content="https://donjonsetbastons.fr/visuel-partage.jpg">
+    <meta property="og:type" content="website">
+
   <style>
-    * {
+    html, body {
+      height: 100%;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
     }
 
     body {
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 100vh;
-      background: #0f0f0f url("Banniere YT 2048x1152 v2 1.jpg") center center / cover no-repeat fixed;
+      background: #0f0f0f url("banniere.jpg") center center / cover no-repeat;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       color: #fff;
       padding: 2rem;
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+      z-index: 0;
     }
 
     .container {
@@ -34,14 +49,6 @@
       z-index: 1;
     }
 
-    .overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.55);
-      z-index: 0;
-    }
-
-    /* ---- Zone boutons (1/3 inférieur) ---- */
     .button-group {
       display: flex;
       gap: 1.25rem;
@@ -69,11 +76,10 @@
       transform: scale(1.04);
     }
 
-    /* ---- Footer ---- */
     .footer {
       text-align: center;
       font-size: 0.875rem;
-      color: #666;
+      color: #999;
       padding-bottom: 0.5rem;
     }
 
@@ -82,14 +88,13 @@
       user-select: none;
     }
 
-    /* ---- Easter-egg : bouton caché ---- */
     .secret-btn {
       display: none;
       margin-top: 0.75rem;
       padding: 0.5rem 1.25rem;
       background: transparent;
-      border: 1px solid #333;
-      color: #888;
+      border: 1px solid #555;
+      color: #aaa;
       font-size: 0.75rem;
       border-radius: 6px;
       cursor: pointer;
@@ -97,7 +102,7 @@
     }
 
     .secret-btn:hover {
-      border-color: #888;
+      border-color: #aaa;
       color: #fff;
     }
 
@@ -109,14 +114,13 @@
 <body>
   <div class="overlay"></div>
   <div class="container">
-    <!-- Groupe de 3 boutons (alignés au ⅓ inférieur) -->
+
     <div class="button-group">
       <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="btn">Instagram</a>
       <a href="https://tiktok.com" target="_blank" rel="noopener noreferrer" class="btn">TikTok</a>
       <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" class="btn">YouTube</a>
     </div>
 
-    <!-- Footer + easter egg -->
     <div class="footer">
       <span class="copyright" id="copyright">&copy;</span>
       <span> 2026 Tous droits r&eacute;serv&eacute;s.</span>
@@ -130,12 +134,10 @@
       var copyright = document.getElementById('copyright');
       var secretBtn = document.getElementById('secretBtn');
 
-      // Easter egg : double-clic sur ©
       copyright.addEventListener('dblclick', function() {
         secretBtn.classList.toggle('visible');
       });
 
-      // Le bouton caché ouvre un lien secret
       secretBtn.addEventListener('click', function() {
         window.open('https://thekatow.github.io/donjonsetbastons/', '_blank');
       });
