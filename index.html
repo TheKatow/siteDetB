@@ -52,7 +52,8 @@
       font-weight: 600;
       line-height: 1.5;
       max-width: 1000px;
-      margin: auto 0 2rem;
+      margin-top: 12vh;
+      margin-bottom: 2rem;
       padding: 0 1rem;
     }
 
@@ -92,31 +93,10 @@
     .copyright {
       display: inline-block;
       padding: 0.5rem 0.75rem;
-      cursor: default;
+      cursor: pointer;
       user-select: none;
     }
 
-    .secret-btn {
-      display: none;
-      margin-top: 0.75rem;
-      padding: 0.5rem 1.25rem;
-      background: transparent;
-      border: 1px solid #555;
-      color: #aaa;
-      font-size: 0.75rem;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: border-color 0.2s, color 0.2s;
-    }
-
-    .secret-btn:hover {
-      border-color: #aaa;
-      color: #fff;
-    }
-
-    .secret-btn.visible {
-      display: inline-block;
-    }
   </style>
 </head>
 <body>
@@ -137,24 +117,13 @@
     <div class="footer">
       <span class="copyright" id="copyright">&copy;</span>
       <span> 2026 Tous droits r&eacute;serv&eacute;s.</span>
-      <br>
-      <button class="secret-btn" id="secretBtn">Application</button>
     </div>
   </div>
 
   <script>
-    (function() {
-      var copyright = document.getElementById('copyright');
-      var secretBtn = document.getElementById('secretBtn');
-
-      copyright.addEventListener('dblclick', function() {
-        secretBtn.classList.toggle('visible');
-      });
-
-      secretBtn.addEventListener('click', function() {
-        window.open('https://thekatow.github.io/donjonsetbastons', '_blank');
-      });
-    })();
+    document.getElementById('copyright').addEventListener('click', function() {
+      window.open('https://thekatow.github.io/donjonsetbastons', '_blank');
+    });
   </script>
 </body>
 </html>
