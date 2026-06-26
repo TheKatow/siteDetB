@@ -76,12 +76,6 @@
       z-index: 1;
     }
 
-    .fuse-burned.animate-in,
-    .mage-container.animate-in {
-      transition-duration: 5s;
-      transition-timing-function: ease-out;
-    }
-
     .mage-container {
       position: absolute;
       left: 0;
@@ -232,23 +226,22 @@
         return pct;
       }
 
-      // Départ tous les deux à 0, animation vers la position réelle en 5s
+      // Animation initiale JS : 0 → target en 5s avec easing
+      var targetPct = getPercent();
       fuseBurned.style.width = '0';
       mageContainer.style.left = '0';
-      fuseBurned.classList.add('animate-in');
-      mageContainer.classList.add('animate-in');
 
-      requestAnimationFrame(function() {
-        requestAnimationFrame(function() {
-          var target = getPercent();
-          fuseBurned.style.width = target + '%';
-          mageContainer.style.left = target + '%';
-          setTimeout(function() {
-            fuseBurned.classList.remove('animate-in');
-            mageContainer.classList.remove('animate-in');
-          }, 5000);
-        });
-      });
+      var startTs = null;
+      function animateInit(ts) {
+        if (!startTs) startTs = ts;
+        var progress = Math.min((ts - startTs) / 5000, 1);
+        var eased = 1 - (1 - progress) * (1 - progress); // ease-out quad
+        var val = targetPct * eased;
+        fuseBurned.style.width = val + '%';
+        mageContainer.style.left = val + '%';
+        if (progress < 1) requestAnimationFrame(animateInit);
+      }
+      requestAnimationFrame(animateInit);
 
       setInterval(function() { update(); }, 1000);
 
