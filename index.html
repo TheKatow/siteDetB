@@ -61,18 +61,10 @@
       position: relative;
       z-index: 0;
       width: 100%;
+      height: 56px;
       margin-bottom: 1.5rem;
-    }
-
-    .fuse-cords {
-      position: relative;
-      width: 100%;
-    }
-
-    .fuse-cords > img {
-      display: block;
-      width: 100%;
-      height: auto;
+      border-radius: 28px;
+      background: url("corde.png") center center / 100% 100% no-repeat;
     }
 
     .fuse-burned {
@@ -80,28 +72,18 @@
       left: 0;
       top: 0;
       bottom: 0;
-      overflow: hidden;
-      border-radius: 20px 0 0 20px;
+      border-radius: 28px 0 0 28px;
+      background: url("corde_brulée.png") center center / 100% 100% no-repeat;
       transition: width 1s linear;
       z-index: 1;
-    }
-
-    .fuse-burned img {
-      display: block;
-      height: 100%;
-      width: auto;
-      max-width: none;
-      position: absolute;
-      left: 0;
-      top: 0;
     }
 
     .mage-container {
       position: absolute;
       left: 0;
       bottom: 100%;
-      transform: translate(-50%, 0);
-      z-index: 3;
+      transform: translate(-50%, 4px);
+      z-index: 2;
       transition: left 1s linear;
       pointer-events: none;
     }
@@ -194,12 +176,7 @@
     </p>
 
     <div class="fuse-wrapper">
-      <div class="fuse-cords">
-        <img src="corde.png" alt="Corde">
-        <div class="fuse-burned" id="fuseBurned">
-          <img src="corde_brulée.png" alt="Brûlée">
-        </div>
-      </div>
+      <div class="fuse-burned" id="fuseBurned"></div>
       <div class="mage-container" id="mageContainer">
         <img src="mage_bleu.gif" alt="Mage">
       </div>
