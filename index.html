@@ -3,126 +3,279 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Donjons & Bastons | Le Jeu de Cartes d'Exploration de Donjons</title>
-
     <meta name="description" content="Découvrez Donjons & Bastons, un jeu de cartes tactique d'exploration de donjons. Suivez notre aventure sur les réseaux et préparez-vous pour le crowdfunding !">
-
     <meta property="og:title" content="Donjons & Bastons | Jeu de Cartes">
     <meta property="og:description" content="Explorez le donjon, combattez les monstres. Suivez le projet !">
     <meta property="og:image" content="https://donjonsetbastons.fr/visuel-partage.jpg">
     <meta property="og:type" content="website">
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-    }
-
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; }
     body {
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
+      display: flex; align-items: flex-end; justify-content: center;
       background: #0f0f0f url("banniere.jpg") center center / cover no-repeat;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      color: #fff;
-      padding: 2rem;
+      color: #fff; padding: 2rem;
     }
-
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background: rgba(0, 0, 0, 0.5); z-index: 0;
+    }
+    .particles { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
+    .particle {
+      position: absolute; width: 3px; height: 3px;
+      background: rgba(255, 180, 50, 0.25); border-radius: 50%;
+      animation: float linear infinite;
+    }
+    @keyframes float {
+      0%   { transform: translateY(100vh) scale(1); opacity: 0; }
+      10%  { opacity: 1; }
+      90%  { opacity: 1; }
+      100% { transform: translateY(-10vh) scale(0.5); opacity: 0; }
+    }
     .container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-end;
-      width: 100%;
-      max-width: 1100px;
-      min-height: 100vh;
-      position: relative;
-      z-index: 1;
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: flex-end; width: 100%; max-width: 1100px;
+      min-height: 100vh; position: relative; z-index: 2;
     }
-
     .description {
-      text-align: center;
-      font-family: 'Caveat', cursive;
-      font-size: 1.6rem;
-      font-weight: 600;
-      line-height: 1.5;
-      max-width: 1000px;
-      margin-bottom: 2rem;
-      padding: 0 1rem;
+      text-align: center; font-family: 'Caveat', cursive;
+      font-size: 1.6rem; font-weight: 600; line-height: 1.5;
+      max-width: 1000px; margin-bottom: 2rem; padding: 0 1rem;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.6);
     }
-
-    .button-group {
-      display: flex;
-      gap: 1.25rem;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-bottom: 4rem;
+    .fuse-section { width: 100%; max-width: 600px; margin-bottom: 1.5rem; }
+    .fuse-label {
+      text-align: center; font-family: 'Caveat', cursive;
+      font-size: 1.3rem; color: #d4a854; margin-bottom: 0.75rem;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.5);
     }
-
+    .fuse-wrapper { position: relative; width: 100%; height: 50px; }
+    .fuse-burned {
+      position: absolute; inset: 0; border-radius: 25px;
+      background: linear-gradient(90deg, #2a1f1a 0%, #1a1410 100%);
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.6);
+      border: 1px solid #3a2a20; overflow: hidden;
+    }
+    .fuse-burned::after {
+      content: ''; position: absolute; inset: 4px; border-radius: 21px;
+      background: repeating-linear-gradient(90deg, transparent, transparent 8px, rgba(60,40,30,0.3) 8px, rgba(60,40,30,0.3) 10px);
+    }
+    .fuse-intact {
+      position: absolute; left: 0; top: 0; height: 100%; border-radius: 25px;
+      background: linear-gradient(90deg, #d4a854, #c99a4a 40%, #b8893e 70%, #a67832);
+      box-shadow: 0 0 12px rgba(200,150,60,0.3), inset 0 2px 4px rgba(255,220,140,0.3), inset 0 -2px 4px rgba(100,70,20,0.3);
+      border: 1px solid #e0b860; transition: width 1s linear; overflow: hidden;
+    }
+    .fuse-intact::after {
+      content: ''; position: absolute; inset: 3px; border-radius: 22px;
+      background: repeating-linear-gradient(90deg, transparent, transparent 12px, rgba(255,230,160,0.15) 12px, rgba(255,230,160,0.15) 14px);
+    }
+    .fuse-tip {
+      position: absolute; right: -5px; top: 50%; transform: translateY(-50%);
+      width: 12px; height: 12px; border-radius: 50%;
+      background: radial-gradient(circle, #ff6600, #ff3300);
+      box-shadow: 0 0 16px #ff4400, 0 0 32px rgba(255,68,0,0.4);
+      animation: burn-pulse 0.8s ease-in-out infinite alternate; z-index: 3;
+    }
+    @keyframes burn-pulse {
+      0%   { transform: translateY(-50%) scale(1); box-shadow: 0 0 16px #ff4400; }
+      100% { transform: translateY(-50%) scale(1.2); box-shadow: 0 0 28px #ff6600, 0 0 48px rgba(255,68,0,0.5); }
+    }
+    .mage-container {
+      position: absolute; top: 50%; transform: translate(-50%, -50%);
+      z-index: 4; transition: left 1s linear; pointer-events: none;
+    }
+    .mage-container img { width: 50px; height: 50px; display: block; }
+    .mage-fallback {
+      width: 42px; height: 54px;
+      background: linear-gradient(135deg, #4a7add, #2a4aaa);
+      border-radius: 30% 30% 20% 20%; position: relative; margin: 0 auto;
+      box-shadow: 0 0 20px rgba(74,122,221,0.5);
+    }
+    .mage-fallback::before {
+      content: ''; position: absolute; top: -6px; left: 50%; transform: translateX(-50%);
+      width: 0; height: 0; border-left: 7px solid transparent;
+      border-right: 7px solid transparent; border-bottom: 9px solid #f5c842;
+    }
+    .mage-fallback::after {
+      content: ''; position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%);
+      width: 14px; height: 5px; background: #2a1a40; border-radius: 50%;
+    }
+    .timer { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .timer-block {
+      background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px; padding: 0.6rem 1rem; min-width: 68px; backdrop-filter: blur(4px);
+    }
+    .timer-block .number {
+      font-size: 1.7rem; font-weight: 600; color: #f0d080;
+      display: block; line-height: 1.2; text-align: center;
+    }
+    .timer-block .label {
+      font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em;
+      color: #9999bb; display: block; text-align: center;
+    }
+    .percent-bar {
+      display: flex; align-items: center; gap: 0.6rem;
+      width: 100%; max-width: 400px; margin-bottom: 2rem;
+      font-size: 0.75rem; color: #9999bb;
+    }
+    .percent-track { flex: 1; height: 4px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden; }
+    .percent-fill {
+      height: 100%; background: linear-gradient(90deg, #f5c842, #f0972e);
+      border-radius: 2px; transition: width 1s linear;
+    }
+    #percent-text { min-width: 3rem; text-align: right; font-family: monospace; color: #f0d080; }
+    .button-group { display: flex; gap: 1.25rem; flex-wrap: wrap; justify-content: center; margin-bottom: 3rem; }
     .btn {
-      display: inline-block;
-      padding: 0.85rem 2rem;
-      background: #fff;
-      color: #0f0f0f;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 1rem;
-      border-radius: 8px;
-      transition: opacity 0.25s ease, transform 0.25s ease;
+      display: inline-block; padding: 0.75rem 1.8rem;
+      background: rgba(255,255,255,0.95); color: #0f0f0f;
+      text-decoration: none; font-weight: 600; font-size: 0.95rem;
+      border-radius: 8px; transition: opacity 0.25s ease, transform 0.25s ease;
       letter-spacing: 0.02em;
     }
-
-    .btn:hover {
-      opacity: 0.75;
-      transform: scale(1.04);
+    .btn:hover { opacity: 0.8; transform: scale(1.04); }
+    .footer { text-align: center; font-size: 0.8rem; color: #8888aa; padding-bottom: 0.5rem; }
+    .copyright { display: inline-block; padding: 0.5rem 0.75rem; cursor: default; user-select: none; transition: color 0.3s; }
+    .copyright:hover { color: #bbbbdd; }
+    .toast {
+      position: fixed; bottom: 4rem; left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: rgba(10,10,30,0.95); border: 1px solid rgba(245,200,66,0.25);
+      border-radius: 10px; padding: 0.65rem 1.25rem; color: #f0d080;
+      font-size: 0.85rem; opacity: 0; pointer-events: none;
+      transition: all 0.4s ease; z-index: 10; backdrop-filter: blur(8px);
     }
-
-    .footer {
-      text-align: center;
-      font-size: 0.875rem;
-      color: #999;
-      padding-bottom: 0.5rem;
+    .toast.visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+    @media (max-width: 640px) {
+      body { padding: 1rem; }
+      .description { font-size: 1.2rem; }
+      .fuse-wrapper { height: 40px; }
+      .mage-container img { width: 40px; height: 40px; }
+      .mage-fallback { width: 34px; height: 44px; }
+      .timer { gap: 0.5rem; }
+      .timer-block { padding: 0.4rem 0.6rem; min-width: 56px; }
+      .timer-block .number { font-size: 1.3rem; }
+      .btn { padding: 0.6rem 1.2rem; font-size: 0.85rem; }
     }
-
-    .copyright {
-      display: inline-block;
-      padding: 0.5rem 0.75rem;
-      cursor: default;
-      user-select: none;
-    }
-
   </style>
 </head>
 <body>
+  <div class="particles" id="particles"></div>
   <div class="container">
-
     <p class="description">
       Donjons &amp; Bastons est un jeu de soci&eacute;t&eacute; inspir&eacute; du jeu de r&ocirc;le.<br>
       Rejoignez l'aventure, seul ou en &eacute;quipe : Lancez les d&eacute;s, combattez les monstres et tentez votre chance face aux dangers du Donjon, seul ou en &eacute;quipe !<br>
       Jeu en cours de cr&eacute;ation !
     </p>
-
+    <div class="fuse-section">
+      <div class="fuse-label">&#x1F525; La flamme du donjon&#x2026;</div>
+      <div class="fuse-wrapper">
+        <div class="fuse-burned"></div>
+        <div class="fuse-intact" id="fuseIntact">
+          <div class="fuse-tip" id="fuseTip"></div>
+        </div>
+        <div class="mage-container" id="mageContainer">
+          <img src="mage_bleu.gif" alt="Mage" id="mageImg"
+               onerror="this.style.display='none'; document.getElementById('mageFallback').style.display='block';">
+          <div class="mage-fallback" id="mageFallback" style="display:none;"></div>
+        </div>
+      </div>
+    </div>
+    <div class="timer">
+      <div class="timer-block"><span class="number" id="days">--</span><span class="label">Jours</span></div>
+      <div class="timer-block"><span class="number" id="hours">--</span><span class="label">Heures</span></div>
+      <div class="timer-block"><span class="number" id="minutes">--</span><span class="label">Minutes</span></div>
+      <div class="timer-block"><span class="number" id="seconds">--</span><span class="label">Secondes</span></div>
+    </div>
+    <div class="percent-bar">
+      <span id="startLabel">D&eacute;but</span>
+      <div class="percent-track"><div class="percent-fill" id="percentFill"></div></div>
+      <span id="endLabel">Fin</span>
+      <span id="percent-text">0%</span>
+    </div>
     <div class="button-group">
       <a href="https://www.instagram.com/donjonsetbastons?igsh=ZG05cDR3MmxvdWow" target="_blank" rel="noopener noreferrer" class="btn">Instagram</a>
       <a href="https://vm.tiktok.com/ZNRTfNsvg/" target="_blank" rel="noopener noreferrer" class="btn">TikTok</a>
       <a href="https://youtube.com/@donjonsbastons?si=_zsOGzjxVTvHwoIV" target="_blank" rel="noopener noreferrer" class="btn">YouTube</a>
     </div>
-
     <div class="footer">
       <span class="copyright" id="copyright">&copy;</span>
       <span> 2026 Tous droits r&eacute;serv&eacute;s.</span>
     </div>
   </div>
-
+  <div class="toast" id="toast"></div>
   <script>
-    document.getElementById('copyright').addEventListener('click', function() {
-      window.open('https://thekatow.github.io/donjonsetbastons', '_blank');
-    });
+    (function() {
+      'use strict';
+      var _0x4a2b = "MjAyNi0xMi0zMVQyMzo1OTo1OQ==";
+      var _0x9e1a = "aHR0cHM6Ly90aGVrYXRvdy5naXRodWIuaW8vZG9uam9uc2V0YmFzdG9ucw==";
+      var END_DATE_STR = atob(_0x4a2b);
+      var EASTER_EGG_URL = atob(_0x9e1a);
+      var START_DATE = new Date("2026-06-24T00:00:00");
+      var END_DATE = new Date(END_DATE_STR);
+      var fuseIntact = document.getElementById('fuseIntact');
+      var mageContainer = document.getElementById('mageContainer');
+      var daysEl = document.getElementById('days');
+      var hoursEl = document.getElementById('hours');
+      var minutesEl = document.getElementById('minutes');
+      var secondsEl = document.getElementById('seconds');
+      var percentFill = document.getElementById('percentFill');
+      var percentText = document.getElementById('percent-text');
+      var startLabel = document.getElementById('startLabel');
+      var endLabel = document.getElementById('endLabel');
+      var toast = document.getElementById('toast');
+      startLabel.textContent = START_DATE.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
+      endLabel.textContent = END_DATE.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
+      (function() {
+        var c = document.getElementById('particles');
+        for (var i = 0; i < 25; i++) {
+          var p = document.createElement('div');
+          p.className = 'particle';
+          p.style.left = Math.random() * 100 + '%';
+          p.style.animationDuration = (10 + Math.random() * 14) + 's';
+          p.style.animationDelay = (Math.random() * 12) + 's';
+          p.style.width = p.style.height = (2 + Math.random() * 3) + 'px';
+          c.appendChild(p);
+        }
+      })();
+      function update() {
+        var now = new Date();
+        var total = END_DATE.getTime() - START_DATE.getTime();
+        var elapsed = now.getTime() - START_DATE.getTime();
+        var percent = Math.min(Math.max(elapsed / total, 0), 1);
+        var remaining = Math.max(END_DATE.getTime() - now.getTime(), 0);
+        var widthPercent = (1 - percent) * 100;
+        fuseIntact.style.width = widthPercent + '%';
+        mageContainer.style.left = widthPercent + '%';
+        var totalSec = Math.floor(remaining / 1000);
+        var d = Math.floor(totalSec / 86400);
+        var h = Math.floor((totalSec % 86400) / 3600);
+        var m = Math.floor((totalSec % 3600) / 60);
+        var s = totalSec % 60;
+        daysEl.textContent = String(d).padStart(2, '0');
+        hoursEl.textContent = String(h).padStart(2, '0');
+        minutesEl.textContent = String(m).padStart(2, '0');
+        secondsEl.textContent = String(s).padStart(2, '0');
+        var pct = Math.round(percent * 100);
+        percentFill.style.width = pct + '%';
+        percentText.textContent = pct + '%';
+      }
+      update();
+      setInterval(update, 1000);
+      document.getElementById('copyright').addEventListener('dblclick', function(e) {
+        e.preventDefault();
+        toast.textContent = '\uD83D\uDD2E Un monde secret s\'ouvre\u2026';
+        toast.classList.add('visible');
+        clearTimeout(toast._hide);
+        toast._hide = setTimeout(function() { toast.classList.remove('visible'); }, 3000);
+        setTimeout(function() { window.open(EASTER_EGG_URL, '_blank'); }, 1200);
+      });
+    })();
   </script>
 </body>
 </html>
