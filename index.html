@@ -92,27 +92,8 @@
       width: auto;
       max-width: none;
       position: absolute;
-      right: 0;
-    }
-
-    .fuse-intact {
-      position: absolute;
-      right: 0;
-      top: 0;
-      bottom: 0;
-      overflow: hidden;
-      border-radius: 0 20px 20px 0;
-      transition: width 1s linear;
-      z-index: 2;
-    }
-
-    .fuse-intact img {
-      display: block;
-      height: 100%;
-      width: auto;
-      max-width: none;
-      position: absolute;
       left: 0;
+      top: 0;
     }
 
     .mage-container {
@@ -218,9 +199,6 @@
         <div class="fuse-burned" id="fuseBurned">
           <img src="corde_brulée.png" alt="Brûlée">
         </div>
-        <div class="fuse-intact" id="fuseIntact">
-          <img src="corde.png" alt="Saine">
-        </div>
       </div>
       <div class="mage-container" id="mageContainer">
         <img src="mage_bleu.gif" alt="Mage">
@@ -254,7 +232,6 @@
       var EGG_URL    = atob(_egg);
 
       var fuseBurned  = document.getElementById('fuseBurned');
-      var fuseIntact  = document.getElementById('fuseIntact');
       var mageContainer = document.getElementById('mageContainer');
       var toast       = document.getElementById('toast');
 
@@ -265,7 +242,6 @@
         var percent = Math.min(Math.max(elapsed / total, 0), 1);
         var pct = percent * 100;
         fuseBurned.style.width = pct + '%';
-        fuseIntact.style.width = (100 - pct) + '%';
         mageContainer.style.left = pct + '%';
       }
 
