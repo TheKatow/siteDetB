@@ -76,6 +76,7 @@
       z-index: 1;
     }
 
+    .fuse-burned.animate-in,
     .mage-container.animate-in {
       transition-duration: 5s;
       transition-timing-function: ease-out;
@@ -231,16 +232,19 @@
         return pct;
       }
 
-      // La corde brûlée est directement à sa bonne largeur
-      // Seul le mage glisse de 0 à sa position en 5s
-      fuseBurned.style.width = getPercent() + '%';
+      // Départ tous les deux à 0, animation vers la position réelle en 5s
+      fuseBurned.style.width = '0';
       mageContainer.style.left = '0';
+      fuseBurned.classList.add('animate-in');
       mageContainer.classList.add('animate-in');
 
       requestAnimationFrame(function() {
         requestAnimationFrame(function() {
-          mageContainer.style.left = getPercent() + '%';
+          var target = getPercent();
+          fuseBurned.style.width = target + '%';
+          mageContainer.style.left = target + '%';
           setTimeout(function() {
+            fuseBurned.classList.remove('animate-in');
             mageContainer.classList.remove('animate-in');
           }, 5000);
         });
