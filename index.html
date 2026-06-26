@@ -56,22 +56,26 @@
     .fuse-wrapper {
       position: relative;
       z-index: 0;
-      width: 100vw;
-      height: 56px;
-      left: 50%;
-      transform: translateX(-50%);
-      border-radius: 28px;
-      background: url("corde.png") center center / cover no-repeat;
+      width: 100%;
+      margin-bottom: 1.5rem;
     }
 
-    .fuse-burned {
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      height: 100%;
-      border-radius: 28px 0 0 28px;
+    .fuse-track {
+      position: relative;
+      width: 100%;
+      height: 56px;
+      border-radius: 28px;
+      overflow: hidden;
       background: url("corde_brulée.png") center center / cover no-repeat;
+    }
+
+    .fuse-intact {
+      position: absolute;
+      right: 0;
+      top: 0;
+      height: 100%;
+      border-radius: 0 28px 28px 0;
+      background: url("corde.png") center center / cover no-repeat;
       transition: width 86400s linear;
       z-index: 1;
     }
@@ -157,7 +161,7 @@
 
     @media (max-width: 640px) {
       .description { font-size: 1.2rem; padding: 0 0.5rem; }
-      .fuse-wrapper { height: 30px; }
+      .fuse-track { height: 30px; }
       .mage-container img { width: 42px; height: 42px; }
       .btn { padding: 0.6rem 1.2rem; font-size: 0.85rem; }
       .container { padding: 0 0.5rem; }
@@ -176,9 +180,11 @@
     </p>
 
     <div class="fuse-wrapper">
-      <div class="fuse-burned" id="fuseBurned"></div>
-      <div class="mage-container" id="mageContainer">
-        <img src="mage_bleu.gif" alt="Mage">
+      <div class="fuse-track">
+        <div class="fuse-intact" id="fuseIntact"></div>
+        <div class="mage-container" id="mageContainer">
+          <img src="mage_bleu.gif" alt="Mage">
+        </div>
       </div>
     </div>
 
@@ -208,7 +214,7 @@
       var END_DATE   = new Date(atob(_end));
       var EGG_URL    = atob(_egg);
 
-      var fuseBurned  = document.getElementById('fuseBurned');
+      var fuseIntact  = document.getElementById('fuseIntact');
       var mageContainer = document.getElementById('mageContainer');
       var toast       = document.getElementById('toast');
 
@@ -221,21 +227,19 @@
 
       function update(pct) {
         if (pct === undefined) pct = getPercent();
-        fuseBurned.style.width = pct + '%';
+        fuseIntact.style.width = (100 - pct) + '%';
         mageContainer.style.left = pct + '%';
         return pct;
       }
 
-      // Désactive les transitions CSS pendant l'anim initiale
-      fuseBurned.style.transition = 'none';
+      // Animation initiale : la corde intacte rétrécit, le mage glisse
+      fuseIntact.style.transition = 'none';
       mageContainer.style.transition = 'none';
 
       var targetPct = getPercent();
-      fuseBurned.style.width = '0';
+      fuseIntact.style.width = '100%';
       mageContainer.style.left = '0';
-
-      // Force le reflow pour que le style 0 soit enregistré
-      fuseBurned.offsetHeight;
+      fuseIntact.offsetHeight;
 
       var startTs = null;
       function animateInit(ts) {
@@ -243,13 +247,12 @@
         var progress = Math.min((ts - startTs) / 5000, 1);
         var eased = 1 - (1 - progress) * (1 - progress);
         var val = targetPct * eased;
-        fuseBurned.style.width = val + '%';
+        fuseIntact.style.width = (100 - val) + '%';
         mageContainer.style.left = val + '%';
         if (progress < 1) {
           requestAnimationFrame(animateInit);
         } else {
-          // Réactive les transitions CSS après l'anim
-          fuseBurned.style.transition = '';
+          fuseIntact.style.transition = '';
           mageContainer.style.transition = '';
         }
       }
