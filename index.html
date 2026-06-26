@@ -226,20 +226,32 @@
         return pct;
       }
 
-      // Animation initiale JS : 0 → target en 5s avec easing
+      // Désactive les transitions CSS pendant l'anim initiale
+      fuseBurned.style.transition = 'none';
+      mageContainer.style.transition = 'none';
+
       var targetPct = getPercent();
       fuseBurned.style.width = '0';
       mageContainer.style.left = '0';
+
+      // Force le reflow pour que le style 0 soit enregistré
+      fuseBurned.offsetHeight;
 
       var startTs = null;
       function animateInit(ts) {
         if (!startTs) startTs = ts;
         var progress = Math.min((ts - startTs) / 5000, 1);
-        var eased = 1 - (1 - progress) * (1 - progress); // ease-out quad
+        var eased = 1 - (1 - progress) * (1 - progress);
         var val = targetPct * eased;
         fuseBurned.style.width = val + '%';
         mageContainer.style.left = val + '%';
-        if (progress < 1) requestAnimationFrame(animateInit);
+        if (progress < 1) {
+          requestAnimationFrame(animateInit);
+        } else {
+          // Réactive les transitions CSS après l'anim
+          fuseBurned.style.transition = '';
+          mageContainer.style.transition = '';
+        }
       }
       requestAnimationFrame(animateInit);
 
