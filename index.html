@@ -244,7 +244,7 @@
       var startTs = null;
       function animateInit(ts) {
         if (!startTs) startTs = ts;
-        var progress = Math.min((ts - startTs) / 5000, 1);
+        var progress = Math.min((ts - startTs) / 10000, 1);
         var eased = 1 - (1 - progress) * (1 - progress);
         var val = targetPct * eased;
         fuseIntact.style.width = (100 - val) + '%';
