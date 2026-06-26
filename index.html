@@ -225,40 +225,37 @@
         return Math.min(Math.max(elapsed / total, 0), 1) * 100;
       }
 
-      function update(pct) {
-        if (pct === undefined) pct = getPercent();
+      function getTarget() {
+        return getPercent();
+      }
+
+      function apply(pct) {
         fuseIntact.style.width = (100 - pct) + '%';
         mageContainer.style.left = pct + '%';
-        return pct;
       }
 
-      // Animation initiale : la corde intacte rétrécit, le mage glisse
-      fuseIntact.style.transition = 'none';
-      mageContainer.style.transition = 'none';
+      // Position initiale : tout à gauche (corde intacte = 100%, mage = 0)
+      apply(0);
 
-      var targetPct = getPercent();
-      fuseIntact.style.width = '100%';
-      mageContainer.style.left = '0';
+      // Force reflow, puis active la transition 10s
       fuseIntact.offsetHeight;
+      fuseIntact.style.transition = 'width 10s ease-out';
+      mageContainer.style.transition = 'left 10s ease-out';
 
-      var startTs = null;
-      function animateInit(ts) {
-        if (!startTs) startTs = ts;
-        var progress = Math.min((ts - startTs) / 10000, 1);
-        var eased = 1 - (1 - progress) * (1 - progress);
-        var val = targetPct * eased;
-        fuseIntact.style.width = (100 - val) + '%';
-        mageContainer.style.left = val + '%';
-        if (progress < 1) {
-          requestAnimationFrame(animateInit);
-        } else {
-          fuseIntact.style.transition = '';
-          mageContainer.style.transition = '';
-        }
-      }
-      requestAnimationFrame(animateInit);
+      // Anime vers la cible
+      var target = getTarget();
+      apply(target);
 
-      setInterval(function() { update(); }, 1000);
+      // Après 10s, repasse aux transitions CSS (86400s)
+      setTimeout(function() {
+        fuseIntact.style.transition = '';
+        mageContainer.style.transition = '';
+      }, 10000);
+
+      // Mise à jour en temps réel (après l'anim initiale)
+      setTimeout(function() {
+        setInterval(function() { apply(getTarget()); }, 1000);
+      }, 10000);
 
       document.getElementById('copyright').addEventListener('dblclick', function(e) {
         e.preventDefault();
