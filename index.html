@@ -61,8 +61,18 @@
       position: relative;
       z-index: 0;
       width: 100%;
-      height: 40px;
       margin-bottom: 1.5rem;
+    }
+
+    .fuse-cords {
+      position: relative;
+      width: 100%;
+    }
+
+    .fuse-cords > img {
+      display: block;
+      width: 100%;
+      height: auto;
     }
 
     .fuse-burned {
@@ -70,10 +80,19 @@
       left: 0;
       top: 0;
       bottom: 0;
+      overflow: hidden;
       border-radius: 20px 0 0 20px;
-      background: url("corde_brulée.png") center center / 100% 100% no-repeat;
       transition: width 1s linear;
       z-index: 1;
+    }
+
+    .fuse-burned img {
+      display: block;
+      height: 100%;
+      width: auto;
+      max-width: none;
+      position: absolute;
+      right: 0;
     }
 
     .fuse-intact {
@@ -81,10 +100,19 @@
       right: 0;
       top: 0;
       bottom: 0;
+      overflow: hidden;
       border-radius: 0 20px 20px 0;
-      background: url("corde.png") center center / 100% 100% no-repeat;
       transition: width 1s linear;
       z-index: 2;
+    }
+
+    .fuse-intact img {
+      display: block;
+      height: 100%;
+      width: auto;
+      max-width: none;
+      position: absolute;
+      left: 0;
     }
 
     .mage-container {
@@ -185,8 +213,15 @@
     </p>
 
     <div class="fuse-wrapper">
-      <div class="fuse-burned" id="fuseBurned"></div>
-      <div class="fuse-intact" id="fuseIntact"></div>
+      <div class="fuse-cords">
+        <img src="corde.png" alt="Corde">
+        <div class="fuse-burned" id="fuseBurned">
+          <img src="corde_brulée.png" alt="Brûlée">
+        </div>
+        <div class="fuse-intact" id="fuseIntact">
+          <img src="corde.png" alt="Saine">
+        </div>
+      </div>
       <div class="mage-container" id="mageContainer">
         <img src="mage_bleu.gif" alt="Mage">
       </div>
