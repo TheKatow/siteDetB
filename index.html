@@ -75,6 +75,12 @@
       z-index: 1;
     }
 
+    .fuse-burned.animate-in,
+    .mage-container.animate-in {
+      transition-duration: 5s;
+      transition-timing-function: ease-out;
+    }
+
     .mage-container {
       position: absolute;
       left: 0;
@@ -209,18 +215,37 @@
       var mageContainer = document.getElementById('mageContainer');
       var toast       = document.getElementById('toast');
 
-      function update() {
+      function getPercent() {
         var now = new Date();
         var total = END_DATE.getTime() - START_DATE.getTime();
         var elapsed = now.getTime() - START_DATE.getTime();
-        var percent = Math.min(Math.max(elapsed / total, 0), 1);
-        var pct = percent * 100;
-        fuseBurned.style.width = pct + '%';
-        mageContainer.style.left = pct + '%';
+        return Math.min(Math.max(elapsed / total, 0), 1) * 100;
       }
 
-      update();
-      setInterval(update, 1000);
+      function update(pct) {
+        if (pct === undefined) pct = getPercent();
+        fuseBurned.style.width = pct + '%';
+        mageContainer.style.left = pct + '%';
+        return pct;
+      }
+
+      // Animation initiale : départ de 0 jusqu'à la position réelle en 5s
+      fuseBurned.style.width = '0';
+      mageContainer.style.left = '0';
+      fuseBurned.classList.add('animate-in');
+      mageContainer.classList.add('animate-in');
+
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
+          var target = update(getPercent());
+          setTimeout(function() {
+            fuseBurned.classList.remove('animate-in');
+            mageContainer.classList.remove('animate-in');
+          }, 5000);
+        });
+      });
+
+      setInterval(function() { update(); }, 1000);
 
       document.getElementById('copyright').addEventListener('dblclick', function(e) {
         e.preventDefault();
