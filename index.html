@@ -67,17 +67,20 @@
 
     .fuse-burned {
       position: absolute;
-      inset: 0;
+      left: 0;
+      top: 0;
+      height: 100%;
       background: url("corde_brulée.png") left center / cover no-repeat;
       border-radius: 20px;
+      transition: width 1s linear;
     }
 
     .fuse-intact {
       position: absolute;
-      left: 0;
+      right: 0;
       top: 0;
       height: 100%;
-      background: url("corde.png") left center / cover no-repeat;
+      background: url("corde.png") right center / cover no-repeat;
       border-radius: 20px;
       transition: width 1s linear;
     }
@@ -86,7 +89,7 @@
       position: absolute;
       top: 50%;
       transform: translate(-50%, -70%);
-      z-index: 2;
+      z-index: 3;
       transition: left 1s linear;
       pointer-events: none;
     }
@@ -179,7 +182,7 @@
     </p>
 
     <div class="fuse-wrapper">
-      <div class="fuse-burned"></div>
+      <div class="fuse-burned" id="fuseBurned"></div>
       <div class="fuse-intact" id="fuseIntact"></div>
       <div class="mage-container" id="mageContainer">
         <img src="mage_bleu.gif" alt="Mage">
@@ -212,18 +215,20 @@
       var END_DATE   = new Date(atob(_end));
       var EGG_URL    = atob(_egg);
 
-      var fuseIntact   = document.getElementById('fuseIntact');
+      var fuseBurned  = document.getElementById('fuseBurned');
+      var fuseIntact  = document.getElementById('fuseIntact');
       var mageContainer = document.getElementById('mageContainer');
-      var toast        = document.getElementById('toast');
+      var toast       = document.getElementById('toast');
 
       function update() {
         var now = new Date();
         var total = END_DATE.getTime() - START_DATE.getTime();
         var elapsed = now.getTime() - START_DATE.getTime();
         var percent = Math.min(Math.max(elapsed / total, 0), 1);
-        var w = (1 - percent) * 100;
-        fuseIntact.style.width = w + '%';
-        mageContainer.style.left = w + '%';
+        var pct = percent * 100;
+        fuseBurned.style.width = pct + '%';
+        fuseIntact.style.width = (100 - pct) + '%';
+        mageContainer.style.left = pct + '%';
       }
 
       update();
