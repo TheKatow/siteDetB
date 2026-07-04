@@ -90,7 +90,16 @@
       inset: 0;
       transform: rotateY(180deg);
       z-index: 1;
+      background: #0d0707;
+      border-radius: 18px;
+    }
+
+    .card-back::before {
+      content: '';
+      position: absolute;
+      inset: 0;
       background: url("card-back.png") center center / cover no-repeat;
+      opacity: 0.35;
       border-radius: 18px;
     }
 
