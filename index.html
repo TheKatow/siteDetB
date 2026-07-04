@@ -42,21 +42,53 @@
       text-align: center;
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), inset 0 0 30px rgba(184, 134, 11, 0.15);
       backdrop-filter: blur(8px);
-      overflow-y: auto;
+      perspective: 1000px;
+      cursor: pointer;
     }
 
-    .main-card::before {
+    .card-inner {
+      position: relative;
+      width: 100%;
+      transition: transform 0.6s ease;
+      transform-style: preserve-3d;
+    }
+
+    .main-card.flipped .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .card-front,
+    .card-back {
+      backface-visibility: hidden;
+    }
+
+    .card-front {
+      position: relative;
+      z-index: 2;
+    }
+
+    .card-front::before {
       content: '';
       position: absolute;
-      inset: 0;
+      inset: -2px;
       background: url("fond_site.jpg") center center / cover no-repeat;
       opacity: 0.35;
       z-index: 0;
+      border-radius: 18px;
     }
 
-    .main-card > * {
+    .card-front > * {
       position: relative;
       z-index: 1;
+    }
+
+    .card-back {
+      position: absolute;
+      inset: -2px;
+      transform: rotateY(180deg);
+      z-index: 1;
+      background: url("fond_site.jpg") center center / cover no-repeat;
+      border-radius: 18px;
     }
 
     .logo-crop {
@@ -165,34 +197,47 @@
   </style>
 </head>
 <body>
-  <div class="main-card">
-    <div class="logo-crop">
-      <img src="image_3aa424.png" alt="Donjons & Bastons" class="logo-img">
+  <div class="main-card" id="mainCard">
+    <div class="card-inner">
+      <div class="card-front">
+        <div class="logo-crop">
+          <img src="image_3aa424.png" alt="Donjons & Bastons" class="logo-img">
+        </div>
+
+        <section class="content">
+          <h1 class="title">Donjons & Bastons</h1>
+          <p class="description">
+            Un jeu de société inspiré du jeu de rôle. Rejoignez l'aventure, seul ou en équipe : lancez les dés, combattez les monstres et tentez votre chance face aux dangers du Donjon !
+          </p>
+          <div class="badge">Jeu en cours de création</div>
+        </section>
+
+        <nav class="bento-menu">
+          <a href="https://www.instagram.com/" target="_blank" class="btn btn-insta">
+            <i class="fa-brands fa-instagram"></i> Instagram
+          </a>
+          <a href="https://www.tiktok.com/" target="_blank" class="btn btn-tiktok">
+            <i class="fa-brands fa-tiktok"></i> TikTok
+          </a>
+          <a href="https://www.youtube.com/" target="_blank" class="btn btn-yt">
+            <i class="fa-brands fa-youtube"></i> YouTube
+          </a>
+        </nav>
+
+        <footer class="footer">
+          &copy; 2026 Tous droits r&eacute;serv&eacute;s.
+        </footer>
+      </div>
+
+      <div class="card-back"></div>
     </div>
-
-    <section class="content">
-      <h1 class="title">Donjons & Bastons</h1>
-      <p class="description">
-        Un jeu de société inspiré du jeu de rôle. Rejoignez l'aventure, seul ou en équipe : lancez les dés, combattez les monstres et tentez votre chance face aux dangers du Donjon !
-      </p>
-      <div class="badge">Jeu en cours de création</div>
-    </section>
-
-    <nav class="bento-menu">
-      <a href="https://www.instagram.com/" target="_blank" class="btn btn-insta">
-        <i class="fa-brands fa-instagram"></i> Instagram
-      </a>
-      <a href="https://www.tiktok.com/" target="_blank" class="btn btn-tiktok">
-        <i class="fa-brands fa-tiktok"></i> TikTok
-      </a>
-      <a href="https://www.youtube.com/" target="_blank" class="btn btn-yt">
-        <i class="fa-brands fa-youtube"></i> YouTube
-      </a>
-    </nav>
-
-    <footer class="footer">
-      &copy; 2026 Tous droits r&eacute;serv&eacute;s.
-    </footer>
   </div>
+
+  <script>
+    document.getElementById('mainCard').addEventListener('click', function(e) {
+      if (e.target.closest('.logo-crop, .content, .bento-menu, .footer')) return;
+      this.classList.toggle('flipped');
+    });
+  </script>
 </body>
 </html>
