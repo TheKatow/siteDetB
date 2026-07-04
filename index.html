@@ -3,270 +3,191 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Donjons & Bastons | Le Jeu de Cartes d'Exploration de Donjons</title>
-
-    <meta name="description" content="Découvrez Donjons & Bastons, un jeu de cartes tactique d'exploration de donjons. Suivez notre aventure sur les réseaux et préparez-vous pour le crowdfunding !">
-
-    <meta property="og:title" content="Donjons & Bastons | Jeu de Cartes">
-    <meta property="og:description" content="Explorez le donjon, combattez les monstres. Suivez le projet !">
-    <meta property="og:image" content="https://donjonsetbastons.fr/visuel-partage.jpg">
-    <meta property="og:type" content="website">
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Donjons & Bastons</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Metamorphous&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    html, body {
+    * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
 
     body {
-      background: #fff;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      color: #000;
-      margin: 0;
-      padding: 0;
+      background-color: #0d0707;
+      background-image: radial-gradient(circle, #3a1313 0%, #0d0707 100%);
+      color: #f5efe6;
+      font-family: 'Open Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
     }
 
-    .container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-end;
+    .main-card {
+      position: relative;
+      border: 2px solid #b8860b;
+      border-radius: 20px;
+      padding: 40px 30px;
+      max-width: 450px;
       width: 100%;
-      min-height: 100vh;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), inset 0 0 30px rgba(184, 134, 11, 0.15);
+      backdrop-filter: blur(8px);
+      overflow: hidden;
+    }
+
+    .main-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("fond_site.jpg") center center / cover no-repeat;
+      opacity: 0.35;
+      z-index: 0;
+    }
+
+    .main-card > * {
       position: relative;
       z-index: 1;
+    }
+
+    .logo-crop {
+      width: 150px;
+      height: 150px;
+      margin: 0 auto 25px auto;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 3px solid #b8860b;
+      box-shadow: 0 0 25px rgba(184, 134, 11, 0.4);
+      background: #fff;
+    }
+
+    .logo-img {
+      width: 105%;
+      height: 105%;
+      object-fit: cover;
+      margin-left: -2.5%;
+      margin-top: -2.5%;
+    }
+
+    .title {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 1.5rem;
+      color: #dfb76c;
+      margin-bottom: 15px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.8);
     }
 
     .description {
-      text-align: center;
-      font-family: 'Caveat', cursive;
-      font-size: 1.6rem;
-      font-weight: 600;
-      line-height: 1.5;
-      max-width: 1000px;
-      margin-bottom: 1.5rem;
-      padding: 0 1rem;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: #cdbfb2;
+      margin-bottom: 20px;
     }
 
-    /* ===== MÈCHE ===== */
-    .fuse-wrapper {
-      position: relative;
-      z-index: 0;
-      width: 100%;
-      margin-top: auto;
-      margin-bottom: 1.5rem;
+    .badge {
+      display: inline-block;
+      font-family: 'Metamorphous', serif;
+      font-size: 0.75rem;
+      color: #ff4500;
+      background: rgba(255, 69, 0, 0.1);
+      border: 1px solid rgba(255, 69, 0, 0.3);
+      padding: 6px 14px;
+      border-radius: 50px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 35px;
     }
 
-    .fuse-track {
-      position: relative;
-      width: 100%;
-      height: 56px;
-      border-radius: 28px;
-      overflow: hidden;
-      background: url("corde_brulée.png") center center / cover no-repeat;
+    .bento-menu {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 25px;
     }
 
-    .fuse-intact {
-      position: absolute;
-      right: 0;
-      top: 0;
-      height: 100%;
-      border-radius: 0 28px 28px 0;
-      background: url("corde.png") center center / cover no-repeat;
-      transition: width 86400s linear;
-      z-index: 1;
-    }
-
-    .mage-container {
-      position: absolute;
-      left: 0;
-      bottom: 100%;
-      transform: translate(-50%, 4px);
-      z-index: 2;
-      transition: left 86400s linear;
-      pointer-events: none;
-    }
-
-    .mage-container img {
-      width: 56px;
-      height: 56px;
-      display: block;
-    }
-
-    /* ===== BOUTONS ===== */
-    .button-group {
-      display: flex;
-      gap: 1.25rem;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-bottom: 4rem;
+    .btn-yt {
+      grid-column: span 2;
     }
 
     .btn {
-      display: inline-block;
-      padding: 0.85rem 2rem;
-      background: #000;
-      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 15px;
       text-decoration: none;
-      font-weight: 600;
-      font-size: 1rem;
-      border-radius: 8px;
-      transition: opacity 0.25s ease, transform 0.25s ease;
-      letter-spacing: 0.02em;
+      font-family: 'Metamorphous', serif;
+      font-size: 0.9rem;
+      color: #f5efe6;
+      background: #251414;
+      border: 1px solid #4a2e2e;
+      border-radius: 10px;
+      transition: transform 0.2s, background 0.2s, border-color 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.4);
     }
 
     .btn:hover {
-      opacity: 0.75;
-      transform: scale(1.04);
+      transform: translateY(-2px);
+      color: #fff;
+    }
+
+    .btn-insta:hover {
+      background: linear-gradient(45deg, #f09433, #e1306c, #bc1888);
+      border-color: #e1306c;
+      box-shadow: 0 0 15px rgba(225, 48, 108, 0.4);
+    }
+
+    .btn-tiktok:hover {
+      background: #010101;
+      border-color: #00f2fe;
+      box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
+    }
+
+    .btn-yt:hover {
+      background: #ff0000;
+      border-color: #ff0000;
+      box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
     }
 
     .footer {
-      text-align: center;
-      font-size: 0.875rem;
-      color: #999;
-      padding-bottom: 0.5rem;
-    }
-
-    .copyright {
-      display: inline-block;
-      cursor: default;
-      user-select: none;
-    }
-
-    .toast {
-      position: fixed;
-      bottom: 4rem;
-      left: 50%;
-      transform: translateX(-50%) translateY(20px);
-      background: rgba(10,10,30,0.95);
-      border: 1px solid rgba(245,200,66,0.25);
-      border-radius: 10px;
-      padding: 0.65rem 1.25rem;
-      color: #f0d080;
-      font-size: 0.85rem;
-      opacity: 0;
-      pointer-events: none;
-      transition: all 0.4s ease;
-      z-index: 10;
-      backdrop-filter: blur(8px);
-    }
-
-    .toast.visible {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-
-    @media (max-width: 640px) {
-      .description { font-size: 1.2rem; padding: 0 0.5rem; }
-      .fuse-track { height: 30px; }
-      .mage-container img { width: 42px; height: 42px; }
-      .btn { padding: 0.6rem 1.2rem; font-size: 0.85rem; }
-      .container { padding: 0 0.5rem; }
+      font-size: 0.75rem;
+      color: #6e5d53;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-
-    <img src="PP_insta2.png" alt="" style="width:60%;height:auto;display:block;margin:0 auto 2rem;transform:scale(0.75);">
-
-    <p class="description">
-      Donjons &amp; Bastons est un jeu de soci&eacute;t&eacute; inspir&eacute; du jeu de r&ocirc;le.<br>
-      Rejoignez l'aventure, seul ou en &eacute;quipe : Lancez les d&eacute;s, combattez les monstres et tentez votre chance face aux dangers du Donjon, seul ou en &eacute;quipe !<br>
-      Jeu en cours de cr&eacute;ation !
-    </p>
-
-    <div class="fuse-wrapper">
-      <div class="fuse-track">
-        <div class="fuse-intact" id="fuseIntact"></div>
-      </div>
-      <div class="mage-container" id="mageContainer">
-        <img src="mage_bleu.gif" alt="Mage">
-      </div>
+  <div class="main-card">
+    <div class="logo-crop">
+      <img src="image_3aa424.png" alt="Donjons & Bastons" class="logo-img">
     </div>
 
-    <div class="button-group">
-      <a href="https://www.instagram.com/donjonsetbastons?igsh=ZG05cDR3MmxvdWow" target="_blank" rel="noopener noreferrer" class="btn">Instagram</a>
-      <a href="https://vm.tiktok.com/ZNRTfNsvg/" target="_blank" rel="noopener noreferrer" class="btn">TikTok</a>
-      <a href="https://youtube.com/@donjonsbastons?si=_zsOGzjxVTvHwoIV" target="_blank" rel="noopener noreferrer" class="btn">YouTube</a>
-    </div>
+    <section class="content">
+      <h1 class="title">Donjons & Bastons</h1>
+      <p class="description">
+        Un jeu de société inspiré du jeu de rôle. Rejoignez l'aventure, seul ou en équipe : lancez les dés, combattez les monstres et tentez votre chance face aux dangers du Donjon !
+      </p>
+      <div class="badge">Jeu en cours de création</div>
+    </section>
 
-    <div class="footer">
-      <span class="copyright" id="copyright">&copy;</span>
-      <span> 2026 Tous droits r&eacute;serv&eacute;s.</span>
-    </div>
+    <nav class="bento-menu">
+      <a href="https://www.instagram.com/" target="_blank" class="btn btn-insta">
+        <i class="fa-brands fa-instagram"></i> Instagram
+      </a>
+      <a href="https://www.tiktok.com/" target="_blank" class="btn btn-tiktok">
+        <i class="fa-brands fa-tiktok"></i> TikTok
+      </a>
+      <a href="https://www.youtube.com/" target="_blank" class="btn btn-yt">
+        <i class="fa-brands fa-youtube"></i> YouTube
+      </a>
+    </nav>
+
+    <footer class="footer">
+      &copy; 2026 Tous droits r&eacute;serv&eacute;s.
+    </footer>
   </div>
-
-  <div class="toast" id="toast"></div>
-
-  <script>
-    (function() {
-      'use strict';
-      // start: 2026-04-08, end: 2026-10-01
-      var _start = "MjAyNi0wNC0wOFQwMDowMDowMA==";
-      var _end   = "MjAyNi0xMS0wMVQyMzo1OTo1OQ==";
-      var _egg   = "aHR0cHM6Ly90aGVrYXRvdy5naXRodWIuaW8vZG9uam9uc2V0YmFzdG9ucw==";
-
-      var START_DATE = new Date(atob(_start));
-      var END_DATE   = new Date(atob(_end));
-      var EGG_URL    = atob(_egg);
-
-      var fuseIntact  = document.getElementById('fuseIntact');
-      var mageContainer = document.getElementById('mageContainer');
-      var toast       = document.getElementById('toast');
-
-      function getPercent() {
-        var now = new Date();
-        var total = END_DATE.getTime() - START_DATE.getTime();
-        var elapsed = now.getTime() - START_DATE.getTime();
-        return Math.min(Math.max(elapsed / total, 0), 1) * 100;
-      }
-
-      function getTarget() {
-        return getPercent();
-      }
-
-      function apply(pct) {
-        fuseIntact.style.width = (100 - pct) + '%';
-        mageContainer.style.left = pct + '%';
-      }
-
-      // Position initiale : tout à gauche (corde intacte = 100%, mage = 0)
-      apply(0);
-
-      // Force reflow, puis active la transition 10s
-      fuseIntact.offsetHeight;
-      fuseIntact.style.transition = 'width 10s ease-out';
-      mageContainer.style.transition = 'left 10s ease-out';
-
-      // Anime vers la cible
-      var target = getTarget();
-      apply(target);
-
-      // Après 10s, repasse aux transitions CSS (86400s)
-      setTimeout(function() {
-        fuseIntact.style.transition = '';
-        mageContainer.style.transition = '';
-      }, 10000);
-
-      // Mise à jour en temps réel (après l'anim initiale)
-      setTimeout(function() {
-        setInterval(function() { apply(getTarget()); }, 1000);
-      }, 10000);
-
-      document.getElementById('copyright').addEventListener('dblclick', function(e) {
-        e.preventDefault();
-        toast.textContent = '\uD83D\uDD2E Un monde secret s\'ouvre\u2026';
-        toast.classList.add('visible');
-        clearTimeout(toast._hide);
-        toast._hide = setTimeout(function() { toast.classList.remove('visible'); }, 3000);
-        setTimeout(function() { window.open(EGG_URL, '_blank'); }, 1200);
-      });
-    })();
-  </script>
 </body>
 </html>
