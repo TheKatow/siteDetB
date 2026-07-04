@@ -245,9 +245,17 @@
   </div>
 
   <script>
-    document.getElementById('cardInner').addEventListener('click', function(e) {
+    const cardInner = document.getElementById('cardInner');
+    const logo = document.querySelector('.logo-img');
+
+    cardInner.addEventListener('click', function(e) {
       if (e.target.closest('.logo-crop, .content, .bento-menu, .footer')) return;
       this.classList.toggle('flipped');
+    });
+
+    logo.addEventListener('click', function(e) {
+      e.stopPropagation();
+      this.src = this.src.includes('PP_insta2') ? 'image_3aa424.png' : 'PP_insta2.png';
     });
   </script>
 </body>
