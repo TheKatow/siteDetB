@@ -45,7 +45,7 @@
       width: 100%;
       max-width: 700px;
       max-height: 100%;
-      height: min(90vh, 700px);
+      height: min(95vh, 750px);
       padding: clamp(6px, 1vh, 14px);
       overflow: visible;
       justify-items: center;
@@ -58,7 +58,7 @@
       width: 100%;
       height: 100%;
       max-width: 200px;
-      max-height: 280px;
+      max-height: 340px;
     }
 
     .card-inner {
@@ -154,10 +154,6 @@
     .center-card.expanded {
       z-index: 200;
       transform: scale(var(--scale, 2));
-    }
-
-    .center-card.expanded .card-front {
-      overflow: hidden;
     }
 
     .center-card .card-inner {
@@ -281,7 +277,7 @@
       }
       .card {
         max-width: 120px;
-        max-height: 170px;
+        max-height: 210px;
       }
     }
   </style>
@@ -343,7 +339,7 @@
       const cRect = centerCard.getBoundingClientRect();
       if (!cRect.width || !cRect.height) return 2;
       const targetW = Math.min(450, window.innerWidth * 0.85);
-      const targetH = window.innerHeight * 0.8;
+      const targetH = window.innerHeight * 0.9;
       const sx = targetW / cRect.width;
       const sy = targetH / cRect.height;
       return Math.min(sx, sy);
