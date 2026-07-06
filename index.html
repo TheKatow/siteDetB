@@ -148,33 +148,20 @@
     .center-card {
       position: relative;
       z-index: 1;
+      transition: transform 1s ease;
     }
 
-    .center-card.fullscreen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
+    .center-card.expanded {
       z-index: 200;
-      max-width: none;
-      max-height: none;
+      transform: scale(var(--scale, 2));
     }
 
-    .center-card.fullscreen .card-front {
+    .center-card.expanded .card-front {
       overflow: hidden;
     }
 
     .center-card .card-inner {
       transition: transform 1s ease;
-    }
-
-    .center-card.fullscreen .card-inner {
-      transition: none;
-    }
-
-    .center-card.fullscreen .card-back {
-      display: none;
     }
 
     .logo-crop {
@@ -347,11 +334,19 @@
     }
 
     const centerCard = document.querySelectorAll('.card')[4];
-    let flipInner = null;
-    let flipHandler = null;
 
     function toggleLogo(img) {
       img.src = img.src.includes('PP_insta2') ? 'PP_insta.png' : 'PP_insta2.png';
+    }
+
+    function computeScale() {
+      const cRect = centerCard.getBoundingClientRect();
+      if (!cRect.width || !cRect.height) return 2;
+      const targetW = Math.min(450, window.innerWidth * 0.85);
+      const targetH = window.innerHeight * 0.8;
+      const sx = targetW / cRect.width;
+      const sy = targetH / cRect.height;
+      return Math.min(sx, sy);
     }
 
     grid.addEventListener('click', function(e) {
@@ -375,27 +370,13 @@
       if (card.classList.contains('center-card')) {
         const wasFlipped = card.classList.contains('flipped');
         if (wasFlipped) {
-          card.classList.remove('flipped', 'fullscreen');
-          if (flipInner && flipHandler) {
-            flipInner.removeEventListener('transitionend', flipHandler);
-            flipInner = null;
-            flipHandler = null;
-          }
+          card.classList.remove('flipped', 'expanded');
+          card.style.removeProperty('--scale');
         } else {
-          card.classList.add('flipped');
+          const scale = computeScale();
+          card.style.setProperty('--scale', scale);
           requestAnimationFrame(function() {
-            const inner = card.querySelector('.card-inner');
-            const handler = function(e) {
-              if (e.propertyName === 'transform' && !card.classList.contains('fullscreen')) {
-                card.classList.add('fullscreen');
-                inner.removeEventListener('transitionend', handler);
-                flipInner = null;
-                flipHandler = null;
-              }
-            };
-            inner.addEventListener('transitionend', handler);
-            flipInner = inner;
-            flipHandler = handler;
+            card.classList.add('flipped', 'expanded');
           });
         }
       } else {
