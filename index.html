@@ -150,14 +150,12 @@
       z-index: 1;
     }
 
-    .center-card.scaling {
-      z-index: 200;
-      transition: transform 1s ease;
-      transform: scale(var(--scale, 2));
-    }
-
     .center-card.fullscreen {
       position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
       z-index: 200;
       max-width: none;
       max-height: none;
@@ -167,16 +165,16 @@
       overflow: hidden;
     }
 
-    .center-card.scaling .card-front {
-      overflow: hidden;
-    }
-
     .center-card .card-inner {
       transition: transform 1s ease;
     }
 
     .center-card.fullscreen .card-inner {
       transition: none;
+    }
+
+    .center-card.fullscreen .card-back {
+      display: none;
     }
 
     .logo-crop {
@@ -349,30 +347,11 @@
     }
 
     const centerCard = document.querySelectorAll('.card')[4];
-    let fullscreenHandler = null;
+    let flipInner = null;
+    let flipHandler = null;
 
     function toggleLogo(img) {
       img.src = img.src.includes('PP_insta2') ? 'PP_insta.png' : 'PP_insta2.png';
-    }
-
-    function computeScale() {
-      const cRect = centerCard.getBoundingClientRect();
-      if (!cRect.width || !cRect.height) return 2;
-      const maxW = window.innerWidth * 0.95;
-      const maxH = window.innerHeight * 0.9;
-      const sx = maxW / cRect.width;
-      const sy = maxH / cRect.height;
-      return Math.min(sx, sy);
-    }
-
-    function switchToFullscreen(card) {
-      const rect = card.getBoundingClientRect();
-      card.style.width = rect.width + 'px';
-      card.style.height = rect.height + 'px';
-      card.style.left = rect.left + 'px';
-      card.style.top = rect.top + 'px';
-      card.classList.remove('scaling');
-      card.classList.add('fullscreen');
     }
 
     grid.addEventListener('click', function(e) {
@@ -396,33 +375,28 @@
       if (card.classList.contains('center-card')) {
         const wasFlipped = card.classList.contains('flipped');
         if (wasFlipped) {
-          card.classList.remove('flipped', 'scaling', 'fullscreen');
-          card.style.removeProperty('--scale');
-          card.style.removeProperty('width');
-          card.style.removeProperty('height');
-          card.style.removeProperty('left');
-          card.style.removeProperty('top');
-          if (fullscreenHandler) {
-            card.removeEventListener('transitionend', fullscreenHandler);
-            fullscreenHandler = null;
+          card.classList.remove('flipped', 'fullscreen');
+          if (flipInner && flipHandler) {
+            flipInner.removeEventListener('transitionend', flipHandler);
+            flipInner = null;
+            flipHandler = null;
           }
         } else {
-          const scale = computeScale();
-          card.style.setProperty('--scale', scale);
+          card.classList.add('flipped');
           requestAnimationFrame(function() {
-            card.classList.add('flipped', 'scaling');
+            const inner = card.querySelector('.card-inner');
+            const handler = function(e) {
+              if (e.propertyName === 'transform' && !card.classList.contains('fullscreen')) {
+                card.classList.add('fullscreen');
+                inner.removeEventListener('transitionend', handler);
+                flipInner = null;
+                flipHandler = null;
+              }
+            };
+            inner.addEventListener('transitionend', handler);
+            flipInner = inner;
+            flipHandler = handler;
           });
-          if (fullscreenHandler) {
-            card.removeEventListener('transitionend', fullscreenHandler);
-          }
-          fullscreenHandler = function(e) {
-            if (e.target === card && e.propertyName === 'transform' && card.classList.contains('scaling')) {
-              switchToFullscreen(card);
-              card.removeEventListener('transitionend', fullscreenHandler);
-              fullscreenHandler = null;
-            }
-          };
-          card.addEventListener('transitionend', fullscreenHandler);
         }
       } else {
         card.classList.toggle('flipped');
