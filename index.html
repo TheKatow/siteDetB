@@ -32,65 +32,59 @@
       padding: 10px;
     }
 
-    .main-card {
-      position: relative;
-      max-width: 450px;
-      max-height: 100%;
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      gap: clamp(6px, 1.2vh, 14px);
       width: 100%;
-      text-align: center;
-      backdrop-filter: blur(8px);
+      max-width: 700px;
+      max-height: 100%;
+      height: min(90vh, 700px);
+      padding: clamp(6px, 1vh, 14px);
+      overflow: visible;
+      justify-items: center;
+      align-items: center;
+    }
+
+    .card {
+      perspective: 1000px;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+      max-width: 200px;
+      max-height: 280px;
+      transition: transform 0.4s ease;
     }
 
     .card-inner {
       position: relative;
       width: 100%;
       height: 100%;
-      transition: transform 0.6s ease;
+      transition: transform 0.5s ease;
       transform-style: preserve-3d;
-      perspective: 1000px;
+      transform: rotateY(180deg);
       border: 2px solid #b8860b;
-      border-radius: 20px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), inset 0 0 30px rgba(184, 134, 11, 0.15);
+      border-radius: 14px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
     }
 
-    .card-inner.flipped {
-      transform: rotateY(180deg);
+    .card.flipped .card-inner {
+      transform: rotateY(0deg);
     }
 
     .card-front,
     .card-back {
-      backface-visibility: hidden;
-    }
-
-    .card-front {
-      position: relative;
-      z-index: 2;
-      padding: clamp(16px, 4vh, 40px) clamp(16px, 3vw, 30px);
-      border-radius: 18px;
-    }
-
-    .card-front::before {
-      content: '';
       position: absolute;
       inset: 0;
-      background: url("fond_site.jpg") top center / cover no-repeat;
-      opacity: 0.35;
-      z-index: 0;
-      border-radius: 18px;
-    }
-
-    .card-front > * {
-      position: relative;
-      z-index: 1;
+      backface-visibility: hidden;
+      border-radius: 12px;
     }
 
     .card-back {
-      position: absolute;
-      inset: 0;
       transform: rotateY(180deg);
-      z-index: 1;
       background: #0d0707;
-      border-radius: 18px;
+      border-radius: 12px;
     }
 
     .card-back::before {
@@ -99,18 +93,160 @@
       inset: 0;
       background: url("card-back.png") center center / cover no-repeat;
       opacity: 0.35;
-      border-radius: 18px;
+      border-radius: 12px;
+    }
+
+    .card-front {
+      background: #0d0707;
+      border-radius: 12px;
+      overflow-y: auto;
+    }
+
+    .card-front::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("fond_site.jpg") center center / cover no-repeat;
+      opacity: 0.35;
+      z-index: 0;
+      border-radius: 12px;
+    }
+
+    .card-front > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .empty-front {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+
+    .center-card {
+      z-index: 1;
+    }
+
+    .center-content {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(8px, 1.5vh, 20px);
+      height: 100%;
+    }
+
+    .card.flipped .center-content {
+      display: flex;
+    }
+
+    .outer-content {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+
+    .card:not(.center-card).flipped .outer-content {
+      display: flex;
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(0, 0, 0, 0.88);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      padding: 20px;
+    }
+
+    .overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .overlay-card {
+      position: relative;
+      width: min(92vw, 560px);
+      max-height: 90vh;
+      border: 2px solid #b8860b;
+      border-radius: 24px;
+      background: #0d0707;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), inset 0 0 40px rgba(184, 134, 11, 0.1);
+      padding: clamp(24px, 4vh, 50px) clamp(20px, 3vw, 40px);
+      text-align: center;
+      overflow-y: auto;
+    }
+
+    .overlay-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("fond_site.jpg") top center / cover no-repeat;
+      opacity: 0.35;
+      z-index: 0;
+      border-radius: 22px;
+    }
+
+    .overlay-card > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .overlay-card .logo-crop {
+      width: clamp(80px, 16vh, 160px);
+      height: clamp(80px, 16vh, 160px);
+      margin-bottom: clamp(10px, 2vh, 25px);
+    }
+
+    .overlay-card .title {
+      font-size: clamp(1.2rem, 4vh, 2.2rem);
+      margin-bottom: clamp(8px, 1.5vh, 18px);
+    }
+
+    .overlay-card .description {
+      font-size: clamp(0.8rem, 2.2vh, 1.1rem);
+      line-height: 1.5;
+      margin-bottom: clamp(8px, 1.5vh, 18px);
+    }
+
+    .overlay-card .badge {
+      font-size: clamp(0.6rem, 1.5vh, 0.85rem);
+      margin-bottom: clamp(12px, 3vh, 30px);
+    }
+
+    .overlay-card .bento-menu {
+      gap: clamp(6px, 1vh, 14px);
+      margin-bottom: clamp(10px, 2vh, 25px);
+    }
+
+    .overlay-card .btn {
+      gap: clamp(6px, 1vh, 12px);
+      padding: clamp(12px, 2.5vh, 20px) clamp(10px, 1.5vw, 16px);
+      font-size: clamp(0.8rem, 2vh, 1.1rem);
+      border-radius: 12px;
+    }
+
+    .overlay-card .footer {
+      font-size: clamp(0.6rem, 1.2vh, 0.8rem);
     }
 
     .logo-crop {
-      width: clamp(80px, 18vh, 150px);
-      height: clamp(80px, 18vh, 150px);
-      margin: 0 auto clamp(10px, 2vh, 25px) auto;
+      width: clamp(40px, 8vh, 90px);
+      height: clamp(40px, 8vh, 90px);
+      margin: 0 auto clamp(4px, 0.6vh, 10px) auto;
       border-radius: 50%;
       overflow: hidden;
-      border: 3px solid #b8860b;
-      box-shadow: 0 0 25px rgba(184, 134, 11, 0.4);
+      border: 2px solid #b8860b;
+      box-shadow: 0 0 20px rgba(184, 134, 11, 0.3);
       background: #fff;
+      flex-shrink: 0;
     }
 
     .logo-img {
@@ -123,38 +259,41 @@
 
     .title {
       font-family: 'Cinzel Decorative', serif;
-      font-size: clamp(1rem, 3.5vh, 1.5rem);
+      font-size: clamp(0.65rem, 2.2vh, 1.1rem);
       color: #dfb76c;
-      margin-bottom: clamp(6px, 1.5vh, 15px);
+      margin-bottom: clamp(3px, 0.6vh, 8px);
       text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+      text-align: center;
     }
 
     .description {
-      font-size: clamp(0.75rem, 2vh, 0.95rem);
-      line-height: 1.5;
+      font-size: clamp(0.45rem, 1.3vh, 0.7rem);
+      line-height: 1.35;
       color: #cdbfb2;
-      margin-bottom: clamp(8px, 2vh, 20px);
+      margin-bottom: clamp(3px, 0.6vh, 8px);
+      text-align: center;
     }
 
     .badge {
       display: inline-block;
       font-family: 'Metamorphous', serif;
-      font-size: clamp(0.6rem, 1.5vh, 0.75rem);
+      font-size: clamp(0.35rem, 0.9vh, 0.55rem);
       color: #ff4500;
       background: rgba(255, 69, 0, 0.1);
       border: 1px solid rgba(255, 69, 0, 0.3);
-      padding: clamp(4px, 0.8vh, 6px) clamp(8px, 1.5vw, 14px);
+      padding: clamp(2px, 0.4vh, 4px) clamp(4px, 0.8vw, 10px);
       border-radius: 50px;
       text-transform: uppercase;
       letter-spacing: 1px;
-      margin-bottom: clamp(10px, 3vh, 35px);
+      margin-bottom: clamp(4px, 1vh, 14px);
     }
 
     .bento-menu {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: clamp(6px, 1vh, 12px);
-      margin-bottom: clamp(8px, 2vh, 25px);
+      gap: clamp(3px, 0.5vh, 7px);
+      margin-bottom: clamp(3px, 0.6vh, 10px);
+      width: 100%;
     }
 
     .btn-yt {
@@ -165,64 +304,107 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: clamp(4px, 1vh, 10px);
-      padding: clamp(10px, 2vh, 15px) clamp(8px, 1.5vw, 12px);
+      gap: clamp(2px, 0.4vh, 6px);
+      padding: clamp(4px, 0.8vh, 10px) clamp(3px, 0.6vw, 8px);
       text-decoration: none;
       font-family: 'Metamorphous', serif;
-      font-size: clamp(0.7rem, 1.8vh, 0.9rem);
+      font-size: clamp(0.4rem, 1.1vh, 0.65rem);
       color: #f5efe6;
       background: #251414;
       border: 1px solid #4a2e2e;
-      border-radius: 10px;
+      border-radius: 7px;
       transition: transform 0.2s, background 0.2s, border-color 0.2s, box-shadow 0.2s;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.4);
+      box-shadow: 0 3px 5px rgba(0,0,0,0.4);
     }
 
     .btn:hover {
-      transform: translateY(-2px);
+      transform: translateY(-1px);
       color: #fff;
     }
 
     .btn-insta:hover {
       background: linear-gradient(45deg, #f09433, #e1306c, #bc1888);
       border-color: #e1306c;
-      box-shadow: 0 0 15px rgba(225, 48, 108, 0.4);
+      box-shadow: 0 0 12px rgba(225, 48, 108, 0.4);
     }
 
     .btn-tiktok:hover {
       background: #010101;
       border-color: #00f2fe;
-      box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
+      box-shadow: 0 0 12px rgba(0, 242, 254, 0.4);
     }
 
     .btn-yt:hover {
       background: #ff0000;
       border-color: #ff0000;
-      box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+      box-shadow: 0 0 12px rgba(255, 0, 0, 0.4);
     }
 
     .footer {
-      font-size: clamp(0.6rem, 1.5vh, 0.75rem);
+      font-size: clamp(0.35rem, 0.8vh, 0.55rem);
       color: #6e5d53;
+      text-align: center;
+    }
+
+    @media (max-width: 500px) {
+      .grid {
+        gap: 4px;
+        padding: 4px;
+        height: min(95vh, 500px);
+      }
+      .card {
+        max-width: 120px;
+        max-height: 170px;
+      }
+      .overlay-card {
+        padding: clamp(16px, 3vh, 30px) clamp(14px, 2vw, 24px);
+        width: min(96vw, 500px);
+      }
     }
   </style>
 </head>
 <body>
-  <div class="main-card">
-    <div class="card-inner" id="cardInner">
-      <div class="card-front">
+  <div class="grid" id="cardGrid"></div>
+
+  <div class="overlay" id="overlay">
+    <div class="overlay-card">
+      <div class="logo-crop">
+        <img src="PP_insta.png" alt="Donjons & Bastons" class="logo-img" id="overlayLogo">
+      </div>
+      <h1 class="title">Donjons &amp; Bastons</h1>
+      <p class="description">
+        Un jeu de soci&eacute;t&eacute; inspir&eacute; du jeu de r&ocirc;le. Rejoignez l'aventure, seul ou en &eacute;quipe : lancez les d&eacute;s, combattez les monstres et tentez votre chance face aux dangers du Donjon !
+      </p>
+      <div class="badge">Jeu en cours de cr&eacute;ation</div>
+      <nav class="bento-menu">
+        <a href="https://www.instagram.com/donjonsetbastons?igsh=ZG05cDR3MmxvdWow" target="_blank" class="btn btn-insta">
+          <i class="fa-brands fa-instagram"></i> Instagram
+        </a>
+        <a href="https://vm.tiktok.com/ZNRKCSmkf/" target="_blank" class="btn btn-tiktok">
+          <i class="fa-brands fa-tiktok"></i> TikTok
+        </a>
+        <a href="https://youtube.com/@donjonsbastons?si=qlxiKCUOFmWNRY7P" target="_blank" class="btn btn-yt">
+          <i class="fa-brands fa-youtube"></i> YouTube
+        </a>
+      </nav>
+      <footer class="footer">
+        <span id="overlayEasterEgg" style="cursor:default">&copy;</span> 2026 Tous droits r&eacute;serv&eacute;s.
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    const outerContent = '<div class="outer-content"></div>';
+    const centerContent = `
+      <div class="center-content">
         <div class="logo-crop">
           <img src="PP_insta.png" alt="Donjons & Bastons" class="logo-img">
         </div>
-
-        <section class="content">
-          <h1 class="title">Donjons & Bastons</h1>
-          <p class="description">
-            Un jeu de société inspiré du jeu de rôle. Rejoignez l'aventure, seul ou en équipe : lancez les dés, combattez les monstres et tentez votre chance face aux dangers du Donjon !
-          </p>
-          <div class="badge">Jeu en cours de création</div>
-        </section>
-
+        <h1 class="title">Donjons &amp; Bastons</h1>
+        <p class="description">
+          Un jeu de soci&eacute;t&eacute; inspir&eacute; du jeu de r&ocirc;le. Rejoignez l'aventure, seul ou en &eacute;quipe : lancez les d&eacute;s, combattez les monstres et tentez votre chance face aux dangers du Donjon !
+        </p>
+        <div class="badge">Jeu en cours de cr&eacute;ation</div>
         <nav class="bento-menu">
           <a href="https://www.instagram.com/donjonsetbastons?igsh=ZG05cDR3MmxvdWow" target="_blank" class="btn btn-insta">
             <i class="fa-brands fa-instagram"></i> Instagram
@@ -234,29 +416,82 @@
             <i class="fa-brands fa-youtube"></i> YouTube
           </a>
         </nav>
-
         <footer class="footer">
-          &copy; 2026 Tous droits r&eacute;serv&eacute;s.
+          <span id="easterEgg" style="cursor:default">&copy;</span> 2026 Tous droits r&eacute;serv&eacute;s.
         </footer>
-      </div>
+      </div>`;
 
-      <div class="card-back"></div>
-    </div>
-  </div>
+    const grid = document.getElementById('cardGrid');
 
-  <script>
-    const cardInner = document.getElementById('cardInner');
-    const logo = document.querySelector('.logo-img');
+    for (let i = 0; i < 9; i++) {
+      const isCenter = i === 4;
+      const card = document.createElement('div');
+      card.className = 'card' + (isCenter ? ' center-card' : '');
+      card.innerHTML = `
+        <div class="card-inner">
+          <div class="card-front">
+            ${isCenter ? centerContent : outerContent}
+          </div>
+          <div class="card-back"></div>
+        </div>`;
+      grid.appendChild(card);
+    }
 
-    cardInner.addEventListener('click', function(e) {
-      if (e.target.closest('.logo-crop, .content, .bento-menu, .footer')) return;
-      this.classList.toggle('flipped');
+    const overlay = document.getElementById('overlay');
+    const centerCard = document.querySelectorAll('.card')[4];
+
+    function toggleLogo(img) {
+      img.src = img.src.includes('PP_insta2') ? 'PP_insta.png' : 'PP_insta2.png';
+    }
+
+    grid.addEventListener('click', function(e) {
+      const link = e.target.closest('a');
+      if (link) return;
+
+      if (e.target.id === 'easterEgg') {
+        window.open('https://thekatow.github.io/donjonsetbastons/', '_blank');
+        return;
+      }
+
+      const logo = e.target.closest('.logo-img');
+      if (logo) {
+        toggleLogo(logo);
+        return;
+      }
+
+      const card = e.target.closest('.card');
+      if (!card) return;
+
+      if (card.classList.contains('center-card')) {
+        card.classList.toggle('flipped');
+        overlay.classList.toggle('active');
+      } else {
+        card.classList.toggle('flipped');
+      }
     });
 
-    logo.addEventListener('click', function(e) {
-      e.stopPropagation();
-      this.src = this.src.includes('PP_insta2') ? 'PP_insta.png' : 'PP_insta2.png';
+    overlay.addEventListener('click', function(e) {
+      if (e.target === this) {
+        this.classList.remove('active');
+        centerCard.classList.remove('flipped');
+      }
     });
+
+    const overlayLogo = document.getElementById('overlayLogo');
+    if (overlayLogo) {
+      overlayLogo.addEventListener('click', function(e) {
+        e.stopPropagation();
+        toggleLogo(this);
+      });
+    }
+
+    const overlayEasterEgg = document.getElementById('overlayEasterEgg');
+    if (overlayEasterEgg) {
+      overlayEasterEgg.addEventListener('click', function(e) {
+        e.stopPropagation();
+        window.open('https://thekatow.github.io/donjonsetbastons/', '_blank');
+      });
+    }
   </script>
 </body>
 </html>
