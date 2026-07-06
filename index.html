@@ -24,9 +24,6 @@
     body {
       height: 100%;
       overflow: hidden;
-    }
-
-    body {
       background-color: #0d0707;
       background-image: radial-gradient(circle, #3a1313 0%, #0d0707 100%);
       color: #f5efe6;
@@ -38,6 +35,7 @@
     }
 
     .grid {
+      position: relative;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       grid-template-rows: repeat(3, 1fr);
@@ -103,7 +101,7 @@
     .card-front {
       background: #0d0707;
       border-radius: 12px;
-      overflow-y: auto;
+      overflow: hidden;
     }
 
     .card-front::before {
@@ -126,8 +124,9 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: clamp(8px, 1.5vh, 20px);
+      padding: clamp(16px, 4vh, 40px) clamp(16px, 3vw, 30px);
       height: 100%;
+      width: 100%;
     }
 
     .card.flipped .center-content {
@@ -148,12 +147,19 @@
     .center-card {
       position: relative;
       z-index: 1;
-      transition: transform 1s ease;
     }
 
-    .center-card.expanded {
+    .center-card.moving {
+      position: absolute;
       z-index: 200;
-      transform: scale(var(--scale, 2));
+      transition: top 1s ease, left 1s ease, width 1s ease, height 1s ease;
+      max-width: none;
+      max-height: none;
+      margin: 0;
+    }
+
+    .center-card.moving .card-front {
+      overflow-y: auto;
     }
 
     .center-card .card-inner {
@@ -161,13 +167,13 @@
     }
 
     .logo-crop {
-      width: clamp(40px, 8vh, 90px);
-      height: clamp(40px, 8vh, 90px);
-      margin: 0 auto clamp(4px, 0.6vh, 10px) auto;
+      width: clamp(80px, 18vh, 150px);
+      height: clamp(80px, 18vh, 150px);
+      margin: 0 auto clamp(10px, 2vh, 25px) auto;
       border-radius: 50%;
       overflow: hidden;
-      border: 2px solid #b8860b;
-      box-shadow: 0 0 20px rgba(184, 134, 11, 0.3);
+      border: 3px solid #b8860b;
+      box-shadow: 0 0 25px rgba(184, 134, 11, 0.4);
       background: #fff;
       flex-shrink: 0;
     }
@@ -182,40 +188,40 @@
 
     .title {
       font-family: 'Cinzel Decorative', serif;
-      font-size: clamp(0.65rem, 2.2vh, 1.1rem);
+      font-size: clamp(1rem, 3.5vh, 1.5rem);
       color: #dfb76c;
-      margin-bottom: clamp(3px, 0.6vh, 8px);
+      margin-bottom: clamp(6px, 1.5vh, 15px);
       text-shadow: 0 2px 4px rgba(0,0,0,0.8);
       text-align: center;
     }
 
     .description {
-      font-size: clamp(0.45rem, 1.3vh, 0.7rem);
-      line-height: 1.35;
+      font-size: clamp(0.75rem, 2vh, 0.95rem);
+      line-height: 1.5;
       color: #cdbfb2;
-      margin-bottom: clamp(3px, 0.6vh, 8px);
+      margin-bottom: clamp(8px, 2vh, 20px);
       text-align: center;
     }
 
     .badge {
       display: inline-block;
       font-family: 'Metamorphous', serif;
-      font-size: clamp(0.35rem, 0.9vh, 0.55rem);
+      font-size: clamp(0.6rem, 1.5vh, 0.75rem);
       color: #ff4500;
       background: rgba(255, 69, 0, 0.1);
       border: 1px solid rgba(255, 69, 0, 0.3);
-      padding: clamp(2px, 0.4vh, 4px) clamp(4px, 0.8vw, 10px);
+      padding: clamp(4px, 0.8vh, 6px) clamp(8px, 1.5vw, 14px);
       border-radius: 50px;
       text-transform: uppercase;
       letter-spacing: 1px;
-      margin-bottom: clamp(4px, 1vh, 14px);
+      margin-bottom: clamp(10px, 3vh, 35px);
     }
 
     .bento-menu {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: clamp(3px, 0.5vh, 7px);
-      margin-bottom: clamp(3px, 0.6vh, 10px);
+      gap: clamp(6px, 1vh, 12px);
+      margin-bottom: clamp(8px, 2vh, 25px);
       width: 100%;
     }
 
@@ -227,44 +233,44 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: clamp(2px, 0.4vh, 6px);
-      padding: clamp(4px, 0.8vh, 10px) clamp(3px, 0.6vw, 8px);
+      gap: clamp(4px, 1vh, 10px);
+      padding: clamp(10px, 2vh, 15px) clamp(8px, 1.5vw, 12px);
       text-decoration: none;
       font-family: 'Metamorphous', serif;
-      font-size: clamp(0.4rem, 1.1vh, 0.65rem);
+      font-size: clamp(0.7rem, 1.8vh, 0.9rem);
       color: #f5efe6;
       background: #251414;
       border: 1px solid #4a2e2e;
-      border-radius: 7px;
+      border-radius: 10px;
       transition: transform 0.2s, background 0.2s, border-color 0.2s, box-shadow 0.2s;
-      box-shadow: 0 3px 5px rgba(0,0,0,0.4);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.4);
     }
 
     .btn:hover {
-      transform: translateY(-1px);
+      transform: translateY(-2px);
       color: #fff;
     }
 
     .btn-insta:hover {
       background: linear-gradient(45deg, #f09433, #e1306c, #bc1888);
       border-color: #e1306c;
-      box-shadow: 0 0 12px rgba(225, 48, 108, 0.4);
+      box-shadow: 0 0 15px rgba(225, 48, 108, 0.4);
     }
 
     .btn-tiktok:hover {
       background: #010101;
       border-color: #00f2fe;
-      box-shadow: 0 0 12px rgba(0, 242, 254, 0.4);
+      box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
     }
 
     .btn-yt:hover {
       background: #ff0000;
       border-color: #ff0000;
-      box-shadow: 0 0 12px rgba(255, 0, 0, 0.4);
+      box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
     }
 
     .footer {
-      font-size: clamp(0.35rem, 0.8vh, 0.55rem);
+      font-size: clamp(0.6rem, 1.5vh, 0.75rem);
       color: #6e5d53;
       text-align: center;
     }
@@ -330,19 +336,72 @@
     }
 
     const centerCard = document.querySelectorAll('.card')[4];
+    let placeholder = null;
 
     function toggleLogo(img) {
       img.src = img.src.includes('PP_insta2') ? 'PP_insta.png' : 'PP_insta2.png';
     }
 
-    function computeScale() {
-      const cRect = centerCard.getBoundingClientRect();
-      if (!cRect.width || !cRect.height) return 2;
-      const targetW = Math.min(450, window.innerWidth * 0.85);
-      const targetH = window.innerHeight * 0.9;
-      const sx = targetW / cRect.width;
-      const sy = targetH / cRect.height;
-      return Math.min(sx, sy);
+    function openCard(card) {
+      const gridRect = grid.getBoundingClientRect();
+      const rect = card.getBoundingClientRect();
+
+      placeholder = document.createElement('div');
+      placeholder.style.visibility = 'hidden';
+      card.parentElement.insertBefore(placeholder, card);
+
+      const fromLeft = rect.left - gridRect.left;
+      const fromTop = rect.top - gridRect.top;
+
+      card.style.top = fromTop + 'px';
+      card.style.left = fromLeft + 'px';
+      card.style.width = rect.width + 'px';
+      card.style.height = rect.height + 'px';
+
+      card.classList.add('moving');
+
+      requestAnimationFrame(function() {
+        card.classList.add('flipped');
+
+        requestAnimationFrame(function() {
+          const targetW = Math.min(450, window.innerWidth * 0.85);
+          const targetH = window.innerHeight * 0.85;
+          const targetLeft = (window.innerWidth - targetW) / 2 - gridRect.left;
+          const targetTop = (window.innerHeight - targetH) / 2 - gridRect.top;
+
+          card.style.top = targetTop + 'px';
+          card.style.left = targetLeft + 'px';
+          card.style.width = targetW + 'px';
+          card.style.height = targetH + 'px';
+        });
+      });
+    }
+
+    function closeCard(card) {
+      if (!placeholder) return;
+
+      const pRect = placeholder.getBoundingClientRect();
+      const gridRect = grid.getBoundingClientRect();
+
+      card.style.top = (pRect.top - gridRect.top) + 'px';
+      card.style.left = (pRect.left - gridRect.left) + 'px';
+      card.style.width = pRect.width + 'px';
+      card.style.height = pRect.height + 'px';
+
+      setTimeout(function() {
+        card.classList.remove('moving', 'flipped');
+        card.style.top = '';
+        card.style.left = '';
+        card.style.width = '';
+        card.style.height = '';
+        card.style.maxWidth = '';
+        card.style.maxHeight = '';
+        card.style.margin = '';
+        if (placeholder) {
+          placeholder.remove();
+          placeholder = null;
+        }
+      }, 1000);
     }
 
     grid.addEventListener('click', function(e) {
@@ -364,16 +423,10 @@
       if (!card) return;
 
       if (card.classList.contains('center-card')) {
-        const wasFlipped = card.classList.contains('flipped');
-        if (wasFlipped) {
-          card.classList.remove('flipped', 'expanded');
-          card.style.removeProperty('--scale');
+        if (card.classList.contains('flipped')) {
+          closeCard(card);
         } else {
-          const scale = computeScale();
-          card.style.setProperty('--scale', scale);
-          requestAnimationFrame(function() {
-            card.classList.add('flipped', 'expanded');
-          });
+          openCard(card);
         }
       } else {
         card.classList.toggle('flipped');
