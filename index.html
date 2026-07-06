@@ -19,6 +19,7 @@
     html, body {
       height: 100%;
       overflow: hidden;
+      margin: 0;
     }
 
     body {
@@ -143,12 +144,11 @@
     .center-card {
       position: relative;
       z-index: 1;
-      transition: transform 1s ease;
+      transition: top 1s ease, left 1s ease, width 1s ease, height 1s ease;
     }
 
     .center-card.expanded {
       z-index: 200;
-      transform: scale(var(--scale, 2));
     }
 
     .center-card .card-inner {
@@ -325,21 +325,78 @@
     }
 
     const centerCard = document.querySelectorAll('.card')[4];
+    let placeholder = null;
 
     function toggleLogo(img) {
       img.src = img.src.includes('PP_insta2') ? 'PP_insta.png' : 'PP_insta2.png';
     }
 
-    function computeScale() {
-      const parent = centerCard.parentElement;
-      const pRect = parent.getBoundingClientRect();
-      const cRect = centerCard.getBoundingClientRect();
-      if (!cRect.width || !cRect.height) return 2;
-      const maxW = pRect.width * 0.9;
-      const maxH = pRect.height * 0.85;
-      const sx = maxW / cRect.width;
-      const sy = maxH / cRect.height;
-      return Math.min(sx, sy);
+    function getTargetSize() {
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const w = Math.min(vw * 0.9, 560);
+      const h = Math.min(vh * 0.85, 700);
+      return {
+        w: Math.round(w),
+        h: Math.round(h),
+        t: Math.round((vh - h) / 2),
+        l: Math.round((vw - w) / 2)
+      };
+    }
+
+    function openCard(card) {
+      const rect = card.getBoundingClientRect();
+      placeholder = document.createElement('div');
+      placeholder.style.visibility = 'hidden';
+      placeholder.style.width = rect.width + 'px';
+      placeholder.style.height = rect.height + 'px';
+      card.parentElement.insertBefore(placeholder, card);
+
+      card.style.position = 'fixed';
+      card.style.top = rect.top + 'px';
+      card.style.left = rect.left + 'px';
+      card.style.width = rect.width + 'px';
+      card.style.height = rect.height + 'px';
+      card.style.maxWidth = 'none';
+      card.style.maxHeight = 'none';
+      card.style.margin = '0';
+
+      centerCard.querySelector('.card-inner').classList.add('flipped');
+
+      void card.offsetHeight;
+
+      const target = getTargetSize();
+      card.style.top = target.t + 'px';
+      card.style.left = target.l + 'px';
+      card.style.width = target.w + 'px';
+      card.style.height = target.h + 'px';
+      card.classList.add('expanded');
+    }
+
+    function closeCard(card) {
+      if (!placeholder) return;
+      const pRect = placeholder.getBoundingClientRect();
+      card.style.top = pRect.top + 'px';
+      card.style.left = pRect.left + 'px';
+      card.style.width = pRect.width + 'px';
+      card.style.height = pRect.height + 'px';
+      card.classList.remove('expanded');
+      centerCard.querySelector('.card-inner').classList.remove('flipped');
+
+      setTimeout(function() {
+        card.style.position = '';
+        card.style.top = '';
+        card.style.left = '';
+        card.style.width = '';
+        card.style.height = '';
+        card.style.maxWidth = '';
+        card.style.maxHeight = '';
+        card.style.margin = '';
+        if (placeholder) {
+          placeholder.remove();
+          placeholder = null;
+        }
+      }, 1000);
     }
 
     grid.addEventListener('click', function(e) {
@@ -361,16 +418,12 @@
       if (!card) return;
 
       if (card.classList.contains('center-card')) {
-        const wasFlipped = card.classList.contains('flipped');
-        if (wasFlipped) {
-          card.classList.remove('flipped', 'expanded');
-          card.style.removeProperty('--scale');
+        if (card.classList.contains('expanded')) {
+          if (!e.target.closest('.logo-crop, .description, a')) {
+            closeCard(card);
+          }
         } else {
-          const scale = computeScale();
-          card.style.setProperty('--scale', scale);
-          requestAnimationFrame(function() {
-            card.classList.add('flipped', 'expanded');
-          });
+          openCard(card);
         }
       } else {
         card.classList.toggle('flipped');
