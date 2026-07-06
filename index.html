@@ -54,7 +54,6 @@
       height: 100%;
       max-width: 200px;
       max-height: 280px;
-      transition: transform 0.4s ease;
     }
 
     .card-inner {
@@ -106,7 +105,7 @@
       content: '';
       position: absolute;
       inset: 0;
-      background: url("fond_site.jpg") center center / cover no-repeat;
+      background: url("fond_site.jpg") top center / cover no-repeat;
       opacity: 0.35;
       z-index: 0;
       border-radius: 12px;
@@ -114,17 +113,6 @@
 
     .card-front > * {
       position: relative;
-      z-index: 1;
-    }
-
-    .empty-front {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-    }
-
-    .center-card {
       z-index: 1;
     }
 
@@ -152,99 +140,19 @@
       display: flex;
     }
 
-    .overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 200;
-      background: rgba(0, 0, 0, 0.88);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.4s ease;
-      padding: 20px;
-    }
-
-    .overlay.active {
-      opacity: 1;
-      pointer-events: all;
-    }
-
-    .overlay-card {
-      position: relative;
-      width: min(92vw, 560px);
-      max-height: 90vh;
-      border: 2px solid #b8860b;
-      border-radius: 24px;
-      background: #0d0707;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), inset 0 0 40px rgba(184, 134, 11, 0.1);
-      padding: clamp(24px, 4vh, 50px) clamp(20px, 3vw, 40px);
-      text-align: center;
-      overflow-y: auto;
-      perspective: 1200px;
-    }
-
-    @keyframes flipOut {
-      0% { transform: rotateY(0deg); opacity: 1; }
-      100% { transform: rotateY(180deg); opacity: 0; }
-    }
-
-    .overlay-card.flipping {
-      animation: flipOut 2s ease forwards;
-    }
-
-    .overlay-card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: url("fond_site.jpg") top center / cover no-repeat;
-      opacity: 0.35;
-      z-index: 0;
-      border-radius: 22px;
-    }
-
-    .overlay-card > * {
+    .center-card {
       position: relative;
       z-index: 1;
+      transition: transform 2s ease;
     }
 
-    .overlay-card .logo-crop {
-      width: clamp(80px, 16vh, 160px);
-      height: clamp(80px, 16vh, 160px);
-      margin-bottom: clamp(10px, 2vh, 25px);
+    .center-card.expanded {
+      z-index: 200;
+      transform: scale(var(--scale, 2));
     }
 
-    .overlay-card .title {
-      font-size: clamp(1.2rem, 4vh, 2.2rem);
-      margin-bottom: clamp(8px, 1.5vh, 18px);
-    }
-
-    .overlay-card .description {
-      font-size: clamp(0.8rem, 2.2vh, 1.1rem);
-      line-height: 1.5;
-      margin-bottom: clamp(8px, 1.5vh, 18px);
-    }
-
-    .overlay-card .badge {
-      font-size: clamp(0.6rem, 1.5vh, 0.85rem);
-      margin-bottom: clamp(12px, 3vh, 30px);
-    }
-
-    .overlay-card .bento-menu {
-      gap: clamp(6px, 1vh, 14px);
-      margin-bottom: clamp(10px, 2vh, 25px);
-    }
-
-    .overlay-card .btn {
-      gap: clamp(6px, 1vh, 12px);
-      padding: clamp(12px, 2.5vh, 20px) clamp(10px, 1.5vw, 16px);
-      font-size: clamp(0.8rem, 2vh, 1.1rem);
-      border-radius: 12px;
-    }
-
-    .overlay-card .footer {
-      font-size: clamp(0.6rem, 1.2vh, 0.8rem);
+    .center-card .card-inner {
+      transition: transform 2s ease;
     }
 
     .logo-crop {
@@ -366,42 +274,11 @@
         max-width: 120px;
         max-height: 170px;
       }
-      .overlay-card {
-        padding: clamp(16px, 3vh, 30px) clamp(14px, 2vw, 24px);
-        width: min(96vw, 500px);
-      }
     }
   </style>
 </head>
 <body>
   <div class="grid" id="cardGrid"></div>
-
-  <div class="overlay" id="overlay">
-    <div class="overlay-card">
-      <div class="logo-crop">
-        <img src="PP_insta.png" alt="Donjons & Bastons" class="logo-img" id="overlayLogo">
-      </div>
-      <h1 class="title">Donjons &amp; Bastons</h1>
-      <p class="description">
-        Un jeu de soci&eacute;t&eacute; inspir&eacute; du jeu de r&ocirc;le. Rejoignez l'aventure, seul ou en &eacute;quipe : lancez les d&eacute;s, combattez les monstres et tentez votre chance face aux dangers du Donjon !
-      </p>
-      <div class="badge">Jeu en cours de cr&eacute;ation</div>
-      <nav class="bento-menu">
-        <a href="https://www.instagram.com/donjonsetbastons?igsh=ZG05cDR3MmxvdWow" target="_blank" class="btn btn-insta">
-          <i class="fa-brands fa-instagram"></i> Instagram
-        </a>
-        <a href="https://vm.tiktok.com/ZNRKCSmkf/" target="_blank" class="btn btn-tiktok">
-          <i class="fa-brands fa-tiktok"></i> TikTok
-        </a>
-        <a href="https://youtube.com/@donjonsbastons?si=qlxiKCUOFmWNRY7P" target="_blank" class="btn btn-yt">
-          <i class="fa-brands fa-youtube"></i> YouTube
-        </a>
-      </nav>
-      <footer class="footer">
-        <span id="overlayEasterEgg" style="cursor:default">&copy;</span> 2026 Tous droits r&eacute;serv&eacute;s.
-      </footer>
-    </div>
-  </div>
 
   <script>
     const outerContent = '<div class="outer-content"></div>';
@@ -447,11 +324,22 @@
       grid.appendChild(card);
     }
 
-    const overlay = document.getElementById('overlay');
     const centerCard = document.querySelectorAll('.card')[4];
 
     function toggleLogo(img) {
       img.src = img.src.includes('PP_insta2') ? 'PP_insta.png' : 'PP_insta2.png';
+    }
+
+    function computeScale() {
+      const parent = centerCard.parentElement;
+      const pRect = parent.getBoundingClientRect();
+      const cRect = centerCard.getBoundingClientRect();
+      if (!cRect.width || !cRect.height) return 2;
+      const maxW = pRect.width * 0.9;
+      const maxH = pRect.height * 0.85;
+      const sx = maxW / cRect.width;
+      const sy = maxH / cRect.height;
+      return Math.min(sx, sy);
     }
 
     grid.addEventListener('click', function(e) {
@@ -473,55 +361,21 @@
       if (!card) return;
 
       if (card.classList.contains('center-card')) {
-        card.classList.toggle('flipped');
-        overlay.classList.toggle('active');
+        const wasFlipped = card.classList.contains('flipped');
+        if (wasFlipped) {
+          card.classList.remove('flipped', 'expanded');
+          card.style.removeProperty('--scale');
+        } else {
+          const scale = computeScale();
+          card.style.setProperty('--scale', scale);
+          requestAnimationFrame(function() {
+            card.classList.add('flipped', 'expanded');
+          });
+        }
       } else {
         card.classList.toggle('flipped');
       }
     });
-
-    let isClosing = false;
-
-    function closeOverlay() {
-      if (isClosing) return;
-      isClosing = true;
-      const overlayCard = document.querySelector('.overlay-card');
-      overlayCard.classList.add('flipping');
-      centerCard.style.transition = 'transform 2s ease';
-      centerCard.classList.remove('flipped');
-      setTimeout(function() {
-        overlay.classList.remove('active');
-        overlayCard.classList.remove('flipping');
-        centerCard.style.transition = '';
-        isClosing = false;
-      }, 2000);
-    }
-
-    overlay.addEventListener('click', function(e) {
-      if (e.target === this) {
-        closeOverlay();
-        return;
-      }
-      if (e.target.closest('.overlay-card') && !e.target.closest('.logo-crop, .description, a')) {
-        closeOverlay();
-      }
-    });
-
-    const overlayLogo = document.getElementById('overlayLogo');
-    if (overlayLogo) {
-      overlayLogo.addEventListener('click', function(e) {
-        e.stopPropagation();
-        toggleLogo(this);
-      });
-    }
-
-    const overlayEasterEgg = document.getElementById('overlayEasterEgg');
-    if (overlayEasterEgg) {
-      overlayEasterEgg.addEventListener('click', function(e) {
-        e.stopPropagation();
-        window.open('https://thekatow.github.io/donjonsetbastons/', '_blank');
-      });
-    }
   </script>
 </body>
 </html>
