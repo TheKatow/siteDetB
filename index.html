@@ -148,20 +148,35 @@
     .center-card {
       position: relative;
       z-index: 1;
-      transition: transform 1s ease;
     }
 
-    .center-card.expanded {
+    .center-card.scaling {
       z-index: 200;
+      transition: transform 1s ease;
       transform: scale(var(--scale, 2));
     }
 
-    .center-card.expanded .card-front {
+    .center-card.fullscreen {
+      position: fixed;
+      z-index: 200;
+      max-width: none;
+      max-height: none;
+    }
+
+    .center-card.fullscreen .card-front {
+      overflow: hidden;
+    }
+
+    .center-card.scaling .card-front {
       overflow: hidden;
     }
 
     .center-card .card-inner {
       transition: transform 1s ease;
+    }
+
+    .center-card.fullscreen .card-inner {
+      transition: none;
     }
 
     .logo-crop {
@@ -334,21 +349,30 @@
     }
 
     const centerCard = document.querySelectorAll('.card')[4];
+    let fullscreenHandler = null;
 
     function toggleLogo(img) {
       img.src = img.src.includes('PP_insta2') ? 'PP_insta.png' : 'PP_insta2.png';
     }
 
     function computeScale() {
-      const parent = centerCard.parentElement;
-      const pRect = parent.getBoundingClientRect();
       const cRect = centerCard.getBoundingClientRect();
       if (!cRect.width || !cRect.height) return 2;
-      const maxW = pRect.width * 0.75;
-      const maxH = pRect.height * 0.65;
+      const maxW = window.innerWidth * 0.95;
+      const maxH = window.innerHeight * 0.9;
       const sx = maxW / cRect.width;
       const sy = maxH / cRect.height;
       return Math.min(sx, sy);
+    }
+
+    function switchToFullscreen(card) {
+      const rect = card.getBoundingClientRect();
+      card.style.width = rect.width + 'px';
+      card.style.height = rect.height + 'px';
+      card.style.left = rect.left + 'px';
+      card.style.top = rect.top + 'px';
+      card.classList.remove('scaling');
+      card.classList.add('fullscreen');
     }
 
     grid.addEventListener('click', function(e) {
@@ -372,14 +396,33 @@
       if (card.classList.contains('center-card')) {
         const wasFlipped = card.classList.contains('flipped');
         if (wasFlipped) {
-          card.classList.remove('flipped', 'expanded');
+          card.classList.remove('flipped', 'scaling', 'fullscreen');
           card.style.removeProperty('--scale');
+          card.style.removeProperty('width');
+          card.style.removeProperty('height');
+          card.style.removeProperty('left');
+          card.style.removeProperty('top');
+          if (fullscreenHandler) {
+            card.removeEventListener('transitionend', fullscreenHandler);
+            fullscreenHandler = null;
+          }
         } else {
           const scale = computeScale();
           card.style.setProperty('--scale', scale);
           requestAnimationFrame(function() {
-            card.classList.add('flipped', 'expanded');
+            card.classList.add('flipped', 'scaling');
           });
+          if (fullscreenHandler) {
+            card.removeEventListener('transitionend', fullscreenHandler);
+          }
+          fullscreenHandler = function(e) {
+            if (e.target === card && e.propertyName === 'transform' && card.classList.contains('scaling')) {
+              switchToFullscreen(card);
+              card.removeEventListener('transitionend', fullscreenHandler);
+              fullscreenHandler = null;
+            }
+          };
+          card.addEventListener('transitionend', fullscreenHandler);
         }
       } else {
         card.classList.toggle('flipped');
