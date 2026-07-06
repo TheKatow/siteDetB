@@ -16,7 +16,12 @@
       padding: 0;
     }
 
-    html, body {
+    html {
+      height: 100%;
+      overflow: clip;
+    }
+
+    body {
       height: 100%;
       overflow: hidden;
     }
@@ -149,6 +154,10 @@
     .center-card.expanded {
       z-index: 200;
       transform: scale(var(--scale, 2));
+    }
+
+    .center-card.expanded .card-front {
+      overflow: hidden;
     }
 
     .center-card .card-inner {
@@ -335,8 +344,8 @@
       const pRect = parent.getBoundingClientRect();
       const cRect = centerCard.getBoundingClientRect();
       if (!cRect.width || !cRect.height) return 2;
-      const maxW = pRect.width * 0.9;
-      const maxH = pRect.height * 0.85;
+      const maxW = pRect.width * 0.75;
+      const maxH = pRect.height * 0.65;
       const sx = maxW / cRect.width;
       const sy = maxH / cRect.height;
       return Math.min(sx, sy);
