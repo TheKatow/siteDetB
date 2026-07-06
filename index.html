@@ -344,7 +344,7 @@
 
     let expandHandler = null;
 
-    function openCard(card) {
+    function expandCard(card) {
       const gridRect = grid.getBoundingClientRect();
       const rect = card.getBoundingClientRect();
 
@@ -359,59 +359,61 @@
       card.style.left = fromLeft + 'px';
       card.style.width = rect.width + 'px';
       card.style.height = rect.height + 'px';
-
       card.classList.add('moving');
 
       requestAnimationFrame(function() {
-        card.classList.add('flipped');
-
-        const inner = card.querySelector('.card-inner');
-        expandHandler = function(e) {
-          if (e.propertyName === 'transform') {
-            inner.removeEventListener('transitionend', expandHandler);
-            expandHandler = null;
-            const targetW = Math.min(550, window.innerWidth * 0.92);
-            const targetH = window.innerHeight * 0.88;
-            const targetLeft = (window.innerWidth - targetW) / 2 - gridRect.left;
-            const targetTop = (window.innerHeight - targetH) / 2 - gridRect.top;
-            card.style.top = targetTop + 'px';
-            card.style.left = targetLeft + 'px';
-            card.style.width = targetW + 'px';
-            card.style.height = targetH + 'px';
-          }
-        };
-        inner.addEventListener('transitionend', expandHandler);
+        const targetW = Math.min(550, window.innerWidth * 0.92);
+        const targetH = window.innerHeight * 0.88;
+        const targetLeft = (window.innerWidth - targetW) / 2 - gridRect.left;
+        const targetTop = (window.innerHeight - targetH) / 2 - gridRect.top;
+        card.style.top = targetTop + 'px';
+        card.style.left = targetLeft + 'px';
+        card.style.width = targetW + 'px';
+        card.style.height = targetH + 'px';
       });
     }
 
-    function closeCard(card) {
-      if (!placeholder) return;
+    function openCard(card) {
+      card.classList.add('flipped');
 
+      const inner = card.querySelector('.card-inner');
+      expandHandler = function(e) {
+        if (e.propertyName === 'transform') {
+          inner.removeEventListener('transitionend', expandHandler);
+          expandHandler = null;
+          expandCard(card);
+        }
+      };
+      inner.addEventListener('transitionend', expandHandler);
+    }
+
+    function closeCard(card) {
       if (expandHandler) {
         const inner = card.querySelector('.card-inner');
         inner.removeEventListener('transitionend', expandHandler);
         expandHandler = null;
       }
 
-      const pRect = placeholder.getBoundingClientRect();
-      const gridRect = grid.getBoundingClientRect();
+      if (placeholder) {
+        const pRect = placeholder.getBoundingClientRect();
+        const gridRect = grid.getBoundingClientRect();
+        card.style.top = (pRect.top - gridRect.top) + 'px';
+        card.style.left = (pRect.left - gridRect.left) + 'px';
+        card.style.width = pRect.width + 'px';
+        card.style.height = pRect.height + 'px';
 
-      card.style.top = (pRect.top - gridRect.top) + 'px';
-      card.style.left = (pRect.left - gridRect.left) + 'px';
-      card.style.width = pRect.width + 'px';
-      card.style.height = pRect.height + 'px';
-
-      setTimeout(function() {
-        card.classList.remove('moving', 'flipped');
-        card.style.top = '';
-        card.style.left = '';
-        card.style.width = '';
-        card.style.height = '';
-        if (placeholder) {
+        setTimeout(function() {
+          card.classList.remove('moving', 'flipped');
+          card.style.top = '';
+          card.style.left = '';
+          card.style.width = '';
+          card.style.height = '';
           placeholder.remove();
           placeholder = null;
-        }
-      }, 1000);
+        }, 1000);
+      } else {
+        card.classList.remove('flipped');
+      }
     }
 
     grid.addEventListener('click', function(e) {
