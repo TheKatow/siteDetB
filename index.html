@@ -125,13 +125,7 @@
     }
 
     .center-card {
-      transition: transform 0.4s ease;
       z-index: 1;
-    }
-
-    .center-card.expanded {
-      transform: scale(1.6);
-      z-index: 10;
     }
 
     .center-content {
@@ -156,6 +150,91 @@
 
     .card:not(.center-card).flipped .outer-content {
       display: flex;
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(0, 0, 0, 0.88);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      padding: 20px;
+    }
+
+    .overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .overlay-card {
+      position: relative;
+      width: min(92vw, 560px);
+      max-height: 90vh;
+      border: 2px solid #b8860b;
+      border-radius: 24px;
+      background: #0d0707;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), inset 0 0 40px rgba(184, 134, 11, 0.1);
+      padding: clamp(24px, 4vh, 50px) clamp(20px, 3vw, 40px);
+      text-align: center;
+      overflow-y: auto;
+    }
+
+    .overlay-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("fond_site.jpg") center center / cover no-repeat;
+      opacity: 0.35;
+      z-index: 0;
+      border-radius: 22px;
+    }
+
+    .overlay-card > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .overlay-card .logo-crop {
+      width: clamp(80px, 16vh, 160px);
+      height: clamp(80px, 16vh, 160px);
+      margin-bottom: clamp(10px, 2vh, 25px);
+    }
+
+    .overlay-card .title {
+      font-size: clamp(1.2rem, 4vh, 2.2rem);
+      margin-bottom: clamp(8px, 1.5vh, 18px);
+    }
+
+    .overlay-card .description {
+      font-size: clamp(0.8rem, 2.2vh, 1.1rem);
+      line-height: 1.5;
+      margin-bottom: clamp(8px, 1.5vh, 18px);
+    }
+
+    .overlay-card .badge {
+      font-size: clamp(0.6rem, 1.5vh, 0.85rem);
+      margin-bottom: clamp(12px, 3vh, 30px);
+    }
+
+    .overlay-card .bento-menu {
+      gap: clamp(6px, 1vh, 14px);
+      margin-bottom: clamp(10px, 2vh, 25px);
+    }
+
+    .overlay-card .btn {
+      gap: clamp(6px, 1vh, 12px);
+      padding: clamp(12px, 2.5vh, 20px) clamp(10px, 1.5vw, 16px);
+      font-size: clamp(0.8rem, 2vh, 1.1rem);
+      border-radius: 12px;
+    }
+
+    .overlay-card .footer {
+      font-size: clamp(0.6rem, 1.2vh, 0.8rem);
     }
 
     .logo-crop {
@@ -277,14 +356,42 @@
         max-width: 120px;
         max-height: 170px;
       }
-      .center-card.expanded {
-        transform: scale(1.3);
+      .overlay-card {
+        padding: clamp(16px, 3vh, 30px) clamp(14px, 2vw, 24px);
+        width: min(96vw, 500px);
       }
     }
   </style>
 </head>
 <body>
   <div class="grid" id="cardGrid"></div>
+
+  <div class="overlay" id="overlay">
+    <div class="overlay-card">
+      <div class="logo-crop">
+        <img src="PP_insta.png" alt="Donjons & Bastons" class="logo-img" id="overlayLogo">
+      </div>
+      <h1 class="title">Donjons &amp; Bastons</h1>
+      <p class="description">
+        Un jeu de soci&eacute;t&eacute; inspir&eacute; du jeu de r&ocirc;le. Rejoignez l'aventure, seul ou en &eacute;quipe : lancez les d&eacute;s, combattez les monstres et tentez votre chance face aux dangers du Donjon !
+      </p>
+      <div class="badge">Jeu en cours de cr&eacute;ation</div>
+      <nav class="bento-menu">
+        <a href="https://www.instagram.com/donjonsetbastons?igsh=ZG05cDR3MmxvdWow" target="_blank" class="btn btn-insta">
+          <i class="fa-brands fa-instagram"></i> Instagram
+        </a>
+        <a href="https://vm.tiktok.com/ZNRKCSmkf/" target="_blank" class="btn btn-tiktok">
+          <i class="fa-brands fa-tiktok"></i> TikTok
+        </a>
+        <a href="https://youtube.com/@donjonsbastons?si=qlxiKCUOFmWNRY7P" target="_blank" class="btn btn-yt">
+          <i class="fa-brands fa-youtube"></i> YouTube
+        </a>
+      </nav>
+      <footer class="footer">
+        <span id="overlayEasterEgg" style="cursor:default">&copy;</span> 2026 Tous droits r&eacute;serv&eacute;s.
+      </footer>
+    </div>
+  </div>
 
   <script>
     const outerContent = '<div class="outer-content"></div>';
@@ -330,6 +437,13 @@
       grid.appendChild(card);
     }
 
+    const overlay = document.getElementById('overlay');
+    const centerCard = document.querySelectorAll('.card')[4];
+
+    function toggleLogo(img) {
+      img.src = img.src.includes('PP_insta2') ? 'PP_insta.png' : 'PP_insta2.png';
+    }
+
     grid.addEventListener('click', function(e) {
       const link = e.target.closest('a');
       if (link) return;
@@ -341,7 +455,7 @@
 
       const logo = e.target.closest('.logo-img');
       if (logo) {
-        logo.src = logo.src.includes('PP_insta2') ? 'PP_insta.png' : 'PP_insta2.png';
+        toggleLogo(logo);
         return;
       }
 
@@ -349,19 +463,35 @@
       if (!card) return;
 
       if (card.classList.contains('center-card')) {
-        const wasFlipped = card.classList.contains('flipped');
         card.classList.toggle('flipped');
-        card.classList.toggle('expanded');
-        if (!wasFlipped) {
-          const prev = document.querySelector('.card.center-card.expanded');
-          if (prev && prev !== card) {
-            prev.classList.remove('flipped', 'expanded');
-          }
-        }
+        overlay.classList.toggle('active');
       } else {
         card.classList.toggle('flipped');
       }
     });
+
+    overlay.addEventListener('click', function(e) {
+      if (e.target === this) {
+        this.classList.remove('active');
+        centerCard.classList.remove('flipped');
+      }
+    });
+
+    const overlayLogo = document.getElementById('overlayLogo');
+    if (overlayLogo) {
+      overlayLogo.addEventListener('click', function(e) {
+        e.stopPropagation();
+        toggleLogo(this);
+      });
+    }
+
+    const overlayEasterEgg = document.getElementById('overlayEasterEgg');
+    if (overlayEasterEgg) {
+      overlayEasterEgg.addEventListener('click', function(e) {
+        e.stopPropagation();
+        window.open('https://thekatow.github.io/donjonsetbastons/', '_blank');
+      });
+    }
   </script>
 </body>
 </html>
