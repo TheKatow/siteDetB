@@ -147,19 +147,17 @@
     .center-card {
       position: relative;
       z-index: 1;
+      transition: width 1s ease, height 1s ease;
     }
 
-    .center-card.moving {
-      position: absolute;
+    .center-card.expanding {
       z-index: 200;
-      transition: top 1s ease, left 1s ease, width 1s ease, height 1s ease;
       max-width: none;
       max-height: none;
-      margin: 0;
     }
 
-    .center-card.moving .card-front {
-      overflow-y: auto;
+    .center-card.expanding .card-front {
+      overflow: hidden;
     }
 
     .center-card .card-inner {
@@ -345,32 +343,14 @@
     let expandHandler = null;
 
     function expandCard(card) {
-      const gridRect = grid.getBoundingClientRect();
-      const rect = card.getBoundingClientRect();
+      const targetW = Math.min(550, window.innerWidth * 0.92);
+      const targetH = window.innerHeight * 0.88;
 
-      placeholder = document.createElement('div');
-      placeholder.style.visibility = 'hidden';
-      card.parentElement.insertBefore(placeholder, card);
-
-      const fromLeft = rect.left - gridRect.left;
-      const fromTop = rect.top - gridRect.top;
-
-      card.classList.add('moving');
-      card.style.top = fromTop + 'px';
-      card.style.left = fromLeft + 'px';
-      card.style.width = rect.width + 'px';
-      card.style.height = rect.height + 'px';
-
-      requestAnimationFrame(function() {
-        const targetW = Math.min(550, window.innerWidth * 0.92);
-        const targetH = window.innerHeight * 0.88;
-        const targetLeft = (window.innerWidth - targetW) / 2 - gridRect.left;
-        const targetTop = (window.innerHeight - targetH) / 2 - gridRect.top;
-        card.style.top = targetTop + 'px';
-        card.style.left = targetLeft + 'px';
-        card.style.width = targetW + 'px';
-        card.style.height = targetH + 'px';
-      });
+      card.style.maxWidth = 'none';
+      card.style.maxHeight = 'none';
+      card.style.width = targetW + 'px';
+      card.style.height = targetH + 'px';
+      card.classList.add('expanding');
     }
 
     function openCard(card) {
@@ -394,26 +374,15 @@
         expandHandler = null;
       }
 
-      if (placeholder) {
-        const pRect = placeholder.getBoundingClientRect();
-        const gridRect = grid.getBoundingClientRect();
-        card.style.top = (pRect.top - gridRect.top) + 'px';
-        card.style.left = (pRect.left - gridRect.left) + 'px';
-        card.style.width = pRect.width + 'px';
-        card.style.height = pRect.height + 'px';
+      card.classList.remove('expanding');
+      card.style.width = '';
+      card.style.height = '';
+      card.style.maxWidth = '';
+      card.style.maxHeight = '';
 
-        setTimeout(function() {
-          card.classList.remove('moving', 'flipped');
-          card.style.top = '';
-          card.style.left = '';
-          card.style.width = '';
-          card.style.height = '';
-          placeholder.remove();
-          placeholder = null;
-        }, 1000);
-      } else {
+      setTimeout(function() {
         card.classList.remove('flipped');
-      }
+      }, 1000);
     }
 
     grid.addEventListener('click', function(e) {
