@@ -355,11 +355,11 @@
       const fromLeft = rect.left - gridRect.left;
       const fromTop = rect.top - gridRect.top;
 
+      card.classList.add('moving');
       card.style.top = fromTop + 'px';
       card.style.left = fromLeft + 'px';
       card.style.width = rect.width + 'px';
       card.style.height = rect.height + 'px';
-      card.classList.add('moving');
 
       requestAnimationFrame(function() {
         const targetW = Math.min(550, window.innerWidth * 0.92);
