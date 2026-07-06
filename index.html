@@ -273,6 +273,27 @@
       color: #6e5d53;
       text-align: center;
     }
+    .site-footer {
+      position: fixed;
+      bottom: 4px;
+      left: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      pointer-events: none;
+    }
+    .site-footer .footer,
+    .site-footer .version {
+      pointer-events: auto;
+    }
+    .version {
+      font-size: clamp(0.5rem, 1.2vh, 0.65rem);
+      color: #6e5d53;
+      opacity: 0.6;
+      font-family: 'Courier New', monospace;
+    }
 
     @media (max-width: 500px) {
       .grid {
@@ -289,6 +310,12 @@
 </head>
 <body>
   <div class="grid" id="cardGrid"></div>
+  <div class="site-footer">
+    <footer class="footer">
+      <span id="easterEgg">&copy;</span> 2026 Tous droits r&eacute;serv&eacute;s.
+    </footer>
+    <span class="version">v1.0.001</span>
+  </div>
 
   <script>
     const outerContent = '<div class="outer-content"></div>';
@@ -313,9 +340,6 @@
             <i class="fa-brands fa-youtube"></i> YouTube
           </a>
         </nav>
-        <footer class="footer">
-          <span id="easterEgg" style="cursor:default">&copy;</span> 2026 Tous droits r&eacute;serv&eacute;s.
-        </footer>
       </div>`;
 
     const grid = document.getElementById('cardGrid');
@@ -386,14 +410,13 @@
       }, 1000);
     }
 
+    document.getElementById('easterEgg').addEventListener('click', function() {
+      window.open('https://thekatow.github.io/donjonsetbastons/', '_blank');
+    });
+
     grid.addEventListener('click', function(e) {
       const link = e.target.closest('a');
       if (link) return;
-
-      if (e.target.id === 'easterEgg') {
-        window.open('https://thekatow.github.io/donjonsetbastons/', '_blank');
-        return;
-      }
 
       const logo = e.target.closest('.logo-img');
       if (logo) {
