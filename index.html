@@ -34,8 +34,18 @@
       padding: 10px;
     }
 
+    #embers-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      width: 100%;
+      height: 100%;
+    }
+
     .grid {
       position: relative;
+      z-index: 1;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       grid-template-rows: repeat(3, 1fr);
@@ -148,21 +158,13 @@
     .center-card {
       position: relative;
       z-index: 1;
-      transition: width 1s ease, height 1s ease;
     }
 
     .center-card.expanding {
       position: absolute;
       z-index: 999;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
       max-width: none;
       max-height: none;
-    }
-
-    .center-card.expanding .card-front {
-      overflow: hidden;
     }
 
     .center-card .card-inner {
@@ -279,6 +281,7 @@
     }
     .site-footer {
       position: fixed;
+      z-index: 1;
       bottom: 4px;
       left: 0;
       right: 0;
@@ -313,12 +316,13 @@
   </style>
 </head>
 <body>
+  <canvas id="embers-canvas"></canvas>
   <div class="grid" id="cardGrid"></div>
   <div class="site-footer">
     <footer class="footer">
       <span id="easterEgg">&copy;</span> 2026 Tous droits r&eacute;serv&eacute;s.
     </footer>
-    <span class="version">v1.0.002</span>
+    <span class="version">v1.0.003</span>
   </div>
 
   <script>
@@ -369,49 +373,94 @@
       img.src = img.src.includes('PP_insta2') ? 'PP_insta.png' : 'PP_insta2.png';
     }
 
-    let expandHandler = null;
-
-    function expandCard(card) {
+    function openCard(card) {
       const targetW = Math.min(550, window.innerWidth * 0.92);
       const targetH = window.innerHeight * 0.88;
 
+      const gridRect = grid.getBoundingClientRect();
+      const cardRect = card.getBoundingClientRect();
+
+      placeholder = document.createElement('div');
+      placeholder.style.cssText = 'width:100%;height:100%;';
+      grid.insertBefore(placeholder, card);
+
+      card.style.position = 'absolute';
+      card.style.left = (cardRect.left - gridRect.left) + 'px';
+      card.style.top = (cardRect.top - gridRect.top) + 'px';
+      card.style.width = cardRect.width + 'px';
+      card.style.height = cardRect.height + 'px';
       card.style.maxWidth = 'none';
       card.style.maxHeight = 'none';
+      card.style.margin = '0';
+      card.style.zIndex = '999';
+
+      void card.offsetWidth;
+
+      card.style.transition = 'left 1s ease, top 1s ease, width 1s ease, height 1s ease';
+      const finalLeft = (gridRect.width - targetW) / 2;
+      const finalTop = (gridRect.height - targetH) / 2;
+      card.style.left = finalLeft + 'px';
+      card.style.top = finalTop + 'px';
       card.style.width = targetW + 'px';
       card.style.height = targetH + 'px';
-      card.classList.add('expanding');
-    }
 
-    function openCard(card) {
-      card.classList.add('flipped');
+      function onExpandEnd(e) {
+        if (e.propertyName !== 'width' && e.propertyName !== 'height') return;
+        card.removeEventListener('transitionend', onExpandEnd);
 
-      const inner = card.querySelector('.card-inner');
-      expandHandler = function(e) {
-        if (e.propertyName === 'transform') {
-          inner.removeEventListener('transitionend', expandHandler);
-          expandHandler = null;
-          expandCard(card);
-        }
-      };
-      inner.addEventListener('transitionend', expandHandler);
+        card.style.transition = '';
+        card.classList.add('flipped');
+      }
+      card.addEventListener('transitionend', onExpandEnd);
     }
 
     function closeCard(card) {
-      if (expandHandler) {
-        const inner = card.querySelector('.card-inner');
-        inner.removeEventListener('transitionend', expandHandler);
-        expandHandler = null;
-      }
+      card.classList.remove('flipped');
 
-      card.classList.remove('expanding');
+      var inner = card.querySelector('.card-inner');
+      function onFlipEnd(e) {
+        if (e.propertyName !== 'transform') return;
+        inner.removeEventListener('transitionend', onFlipEnd);
+
+        if (placeholder && placeholder.parentNode) {
+          var gridRect = grid.getBoundingClientRect();
+          var phRect = placeholder.getBoundingClientRect();
+
+          card.style.transition = 'left 1s ease, top 1s ease, width 1s ease, height 1s ease';
+          card.style.left = (phRect.left - gridRect.left) + 'px';
+          card.style.top = (phRect.top - gridRect.top) + 'px';
+          card.style.width = phRect.width + 'px';
+          card.style.height = phRect.height + 'px';
+
+          function onShrinkEnd(e2) {
+            if (e2.propertyName !== 'width' && e2.propertyName !== 'height') return;
+            card.removeEventListener('transitionend', onShrinkEnd);
+            cleanupCard(card);
+          }
+          card.addEventListener('transitionend', onShrinkEnd);
+        } else {
+          cleanupCard(card);
+        }
+      }
+      inner.addEventListener('transitionend', onFlipEnd);
+    }
+
+    function cleanupCard(card) {
+      if (placeholder && placeholder.parentNode) {
+        placeholder.parentNode.removeChild(placeholder);
+      }
+      placeholder = null;
+
+      card.style.position = '';
+      card.style.left = '';
+      card.style.top = '';
       card.style.width = '';
       card.style.height = '';
       card.style.maxWidth = '';
       card.style.maxHeight = '';
-
-      setTimeout(function() {
-        card.classList.remove('flipped');
-      }, 1000);
+      card.style.margin = '';
+      card.style.zIndex = '';
+      card.style.transition = '';
     }
 
     document.getElementById('easterEgg').addEventListener('click', function() {
@@ -441,6 +490,137 @@
         card.classList.toggle('flipped');
       }
     });
+
+    (function() {
+      const canvas = document.getElementById('embers-canvas');
+      const ctx = canvas.getContext('2d');
+      let particles = [];
+      let animationId = null;
+
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+
+      window.addEventListener('resize', resize);
+      resize();
+
+      const MAX_PARTICLES = 60;
+
+      function createOrangeParticle() {
+        return {
+          type: 'orange',
+          x: canvas.width + 5,
+          y: Math.random() * canvas.height,
+          vx: -(0.8 + Math.random() * 2.2),
+          vy: (Math.random() - 0.5) * 0.5,
+          size: 1.5 + Math.random() * 2.5,
+          baseOpacity: 0.3 + Math.random() * 0.7,
+          life: 0,
+          maxLife: 100 + Math.random() * 140,
+          drift: (Math.random() - 0.5) * 0.3,
+          phase: Math.random() * Math.PI * 2,
+        };
+      }
+
+      function createBlueParticle() {
+        return {
+          type: 'blue',
+          x: -5,
+          y: Math.random() * canvas.height,
+          vx: 0.8 + Math.random() * 2.2,
+          vy: (Math.random() - 0.5) * 0.5,
+          size: 1.5 + Math.random() * 2.5,
+          baseOpacity: 0.3 + Math.random() * 0.7,
+          life: 0,
+          maxLife: 100 + Math.random() * 140,
+          drift: (Math.random() - 0.5) * 0.3,
+          phase: Math.random() * Math.PI * 2,
+        };
+      }
+
+      for (let i = 0; i < 15; i++) {
+        const p = createOrangeParticle();
+        p.life = Math.random() * p.maxLife;
+        p.x = canvas.width - Math.random() * canvas.width * 0.4;
+        particles.push(p);
+      }
+
+      for (let i = 0; i < 15; i++) {
+        const p = createBlueParticle();
+        p.life = Math.random() * p.maxLife;
+        p.x = Math.random() * canvas.width * 0.4;
+        particles.push(p);
+      }
+
+      function animate() {
+        if (particles.length < MAX_PARTICLES) {
+          if (Math.random() < 0.35) particles.push(createOrangeParticle());
+          if (Math.random() < 0.35) particles.push(createBlueParticle());
+        }
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        const fadeRight = canvas.width * 0.55;
+        const fadeLeft = canvas.width * 0.45;
+
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const p = particles[i];
+          p.life++;
+
+          if (p.life > p.maxLife) {
+            particles.splice(i, 1);
+            continue;
+          }
+
+          p.x += p.vx + Math.sin(p.life * 0.025 + p.phase) * p.drift;
+          p.y += p.vy;
+
+          let alpha = p.baseOpacity;
+
+          if (p.type === 'orange') {
+            if (p.x < fadeRight) {
+              const t = Math.max(0, Math.min(1, (fadeRight - p.x) / (fadeRight - canvas.width * 0.45)));
+              alpha *= 1 - t;
+            }
+            if (p.x < -20 || p.x > canvas.width + 20) { particles.splice(i, 1); continue; }
+          } else {
+            if (p.x > fadeLeft) {
+              const t = Math.max(0, Math.min(1, (p.x - fadeLeft) / (canvas.width * 0.55 - fadeLeft)));
+              alpha *= 1 - t;
+            }
+            if (p.x > canvas.width + 20 || p.x < -20) { particles.splice(i, 1); continue; }
+          }
+
+          if (alpha < 0.01) continue;
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+
+          if (p.type === 'orange') {
+            ctx.fillStyle = `rgba(255, ${Math.floor(160 - p.size * 10)}, 50, ${alpha})`;
+          } else {
+            ctx.fillStyle = `rgba(50, 150, 255, ${alpha})`;
+          }
+          ctx.fill();
+
+          if (p.size > 2.5) {
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size * 2, 0, Math.PI * 2);
+            if (p.type === 'orange') {
+              ctx.fillStyle = `rgba(255, 160, 50, ${alpha * 0.1})`;
+            } else {
+              ctx.fillStyle = `rgba(50, 150, 255, ${alpha * 0.1})`;
+            }
+            ctx.fill();
+          }
+        }
+
+        animationId = requestAnimationFrame(animate);
+      }
+
+      animate();
+    })();
   </script>
 </body>
 </html>
